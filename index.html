@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Michael Fitness</title>
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Michael Fitness">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MICHAEL FITNESS — design tokens
+   Paper white, true black, one red. Loud condensed display type.
+   ============================================================ */
+:root{
+  color-scheme: light;
+  --paper:#FFFFFF;
+  --ink:#000000;
+  --red:#F60024;
+  --grey:#767676;
+  --rule:#E6E6E6;
+  --wash:#F4F4F4;
+
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+
+  --display: 'Anton', 'Arial Narrow', 'Helvetica Neue Condensed', Impact, sans-serif;
+  --body: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --bar-h: 78px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+
+html{
+  height:100%;
+  -webkit-text-size-adjust:100%;
+  scroll-padding-top: var(--safe-t);
+}
+body{
+  margin:0;
+  height:100%;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.4;
+  overscroll-behavior-y:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ---------- App frame ---------- */
+#app{
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  padding-top:var(--safe-t);
+}
+.view{ display:none; flex:1 1 auto; flex-direction:column; }
+.view.on{ display:flex; }
+
+.scroll{
+  flex:1 1 auto;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom: calc(var(--safe-b) + 32px);
+}
+#v-session .scroll{ padding-bottom: calc(var(--bar-h) + var(--safe-b) + 24px); }
+
+/* ---------- Typography ---------- */
+h1,h2,h3,h4{ margin:0; font-family:var(--display); font-weight:400; letter-spacing:.01em; line-height:.95; text-transform:uppercase; }
+h1{ font-size:clamp(38px,11vw,54px); }
+h2{ font-size:clamp(28px,7.5vw,38px); }
+h3{ font-size:clamp(22px,6vw,28px); }
+p{ margin:0 0 12px; }
+.pad{ padding:0 20px; }
+
+.kicker{
+  font-family:var(--body);
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--grey);
+}
+.muted{ color:var(--grey); font-size:15px; }
+
+/* ---------- Hero ---------- */
+.hero{
+  background:var(--ink);
+  color:var(--paper);
+  padding:26px 20px 24px;
+}
+.hero .wordmark{
+  font-family:var(--display);
+  font-size:clamp(40px,12.5vw,60px);
+  line-height:.86;
+  text-transform:uppercase;
+}
+.hero .wordmark em{ font-style:normal; color:var(--red); }
+.hero .tag{
+  margin-top:10px; font-weight:700; font-size:13px;
+  letter-spacing:.18em; text-transform:uppercase; color:#9A9A9A;
+}
+
+/* ---------- Buttons ---------- */
+button{ font-family:var(--body); font-size:17px; border:0; background:none; color:inherit; cursor:pointer; }
+
+.btn-huge{
+  display:block; width:100%;
+  background:var(--red); color:#fff;
+  font-family:var(--display); font-size:clamp(28px,8vw,38px);
+  text-transform:uppercase; letter-spacing:.01em;
+  padding:22px 18px; text-align:left;
+  position:relative;
+}
+.btn-huge .sub{
+  display:block; font-family:var(--body); font-size:13px; font-weight:700;
+  letter-spacing:.16em; margin-bottom:6px; opacity:.85;
+}
+.btn-huge::after{
+  content:''; position:absolute; right:20px; top:50%; width:20px; height:20px;
+  border-right:4px solid #fff; border-top:4px solid #fff;
+  transform:translateY(-50%) rotate(45deg);
+}
+.btn-huge:active{ background:#c9001d; }
+
+.btn-block{
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; padding:18px 20px;
+  border-top:2px solid var(--ink);
+  font-family:var(--display); font-size:22px; text-transform:uppercase;
+  text-align:left;
+}
+.btn-block:active{ background:var(--wash); }
+.btn-block .meta{ font-family:var(--body); font-size:14px; font-weight:600; color:var(--grey); text-transform:none; }
+
+.btn-ghost{
+  border:2px solid var(--ink); padding:12px 16px; font-weight:700;
+  font-size:15px; text-transform:uppercase; letter-spacing:.08em;
+}
+.btn-ghost:active{ background:var(--ink); color:#fff; }
+
+/* ---------- Home cards ---------- */
+.upnext{
+  padding:22px 20px 20px;
+  border-bottom:6px solid var(--ink);
+}
+.upnext .phase{ font-family:var(--display); font-size:clamp(30px,8.5vw,42px); text-transform:uppercase; }
+.upnext .prog{ color:var(--red); }
+
+.weekbar{ display:flex; gap:4px; margin-top:14px; }
+.weekbar span{ flex:1; height:8px; background:var(--rule); }
+.weekbar span.done{ background:var(--ink); }
+.weekbar span.cur{ background:var(--red); }
+
+.strip{
+  display:flex; align-items:center; gap:14px;
+  padding:16px 20px; border-top:2px solid var(--ink); background:var(--wash);
+}
+.strip .num{
+  font-family:var(--display); font-size:40px; line-height:.8; color:var(--red);
+}
+.strip .txt{ flex:1; font-size:15px; line-height:1.25; }
+.strip .txt b{ display:block; font-weight:800; text-transform:uppercase; letter-spacing:.06em; font-size:12px; color:var(--grey); }
+
+/* ---------- Session ---------- */
+.sesshead{
+  position:sticky; top:0; z-index:20;
+  background:var(--paper); border-bottom:2px solid var(--ink);
+  padding:12px 16px 10px;
+}
+.sesshead .row{ display:flex; align-items:center; gap:12px; }
+.sesshead .title{ flex:1; font-family:var(--display); font-size:20px; text-transform:uppercase; }
+.xbtn{ width:40px; height:40px; font-size:26px; line-height:1; color:var(--grey); }
+
+.segs{ display:flex; gap:3px; margin-top:10px; }
+.segs i{ flex:1; height:6px; background:var(--rule); }
+.segs i.done{ background:var(--ink); }
+.segs i.cur{ background:var(--red); }
+
+.blockhead{ padding:22px 20px 4px; }
+.blockhead .kicker{ color:var(--red); }
+.blockhead h2{ margin-top:4px; }
+.restnote{
+  margin:14px 20px 0; padding:10px 14px;
+  border-left:5px solid var(--ink); background:var(--wash);
+  font-size:14px; font-weight:600; line-height:1.3;
+}
+
+.ex{ padding:26px 20px 4px; border-top:2px solid var(--rule); margin-top:22px; }
+.ex:first-of-type{ border-top:0; }
+.ex .code{
+  font-family:var(--display); font-size:15px; color:#fff; background:var(--ink);
+  display:inline-block; padding:3px 9px 2px; margin-bottom:8px; letter-spacing:.06em;
+}
+.ex h3{ color:var(--red); }
+.ex .note{
+  margin-top:10px; font-size:14.5px; color:#333; line-height:1.35;
+  border-left:3px solid var(--rule); padding-left:12px;
+}
+.vidrow{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+.vid{
+  display:inline-flex; align-items:center; gap:8px;
+  border:2px solid var(--ink); padding:9px 14px;
+  font-weight:800; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink); text-decoration:none;
+}
+.vid:active{ background:var(--ink); color:#fff; }
+.vid::before{
+  content:''; width:0; height:0;
+  border-left:11px solid currentColor; border-top:7px solid transparent; border-bottom:7px solid transparent;
+}
+.pb{
+  margin-top:12px; font-family:var(--display); font-size:15px; letter-spacing:.06em;
+  color:var(--grey);
+}
+.pb b{ color:var(--ink); }
+
+/* ---------- Set rows ---------- */
+.sets{ margin-top:16px; }
+.set{
+  border:2px solid var(--ink); margin-bottom:10px;
+}
+.set.done{ background:var(--ink); color:#fff; }
+.set.done .target{ color:#B9B9B9; }
+.set .top{ display:flex; align-items:flex-start; gap:12px; padding:13px 14px 11px; }
+.set .lab{ font-family:var(--display); font-size:17px; min-width:62px; text-transform:uppercase; }
+.set .lab:empty{ display:none; min-width:0; }
+.set .target{ flex:1; font-size:14.5px; line-height:1.3; font-weight:500; color:#333; }
+.set .entry{ display:flex; gap:8px; padding:0 14px 13px; align-items:stretch; flex-wrap:nowrap; }
+
+.field{ display:flex; align-items:center; border:2px solid currentColor; flex:1 1 0; min-width:0; }
+.field label{
+  font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  padding:0 6px; opacity:.6; flex:0 0 auto; line-height:1.05; max-width:42px;
+}
+.field input{
+  flex:1 1 0; width:100%; min-width:0; border:0; background:transparent; color:inherit;
+  font-family:var(--display); font-size:26px; padding:8px 6px 6px 0; text-align:center;
+  -moz-appearance:textfield;
+}
+.field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.field input:focus{ outline:3px solid var(--red); outline-offset:2px; }
+
+.donebtn{
+  width:100%; border:2px solid currentColor; padding:13px;
+  font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.04em;
+}
+.donebtn.is-done{ background:var(--red); border-color:var(--red); color:#fff; }
+.tick{
+  flex:0 0 56px; width:56px; min-height:48px;
+  border:2px solid currentColor; font-size:24px; font-weight:800; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.tick.off{ color:#C9C9C9; }
+.set.done .tick{ background:var(--red); border-color:var(--red); color:#fff; }
+.set.done .tick.off{ background:transparent; border-color:#555; color:#555; }
+
+.timebtn{
+  width:100%; border:2px solid currentColor; padding:14px;
+  font-family:var(--display); font-size:34px; text-transform:uppercase; letter-spacing:.04em;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.timebtn.running{ background:var(--red); border-color:var(--red); color:#fff; }
+.timebtn small{ font-family:var(--body); font-size:12px; font-weight:800; letter-spacing:.14em; }
+
+/* ---------- Bottom bar ---------- */
+.bar{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:var(--ink); color:#fff;
+  padding-bottom:var(--safe-b);
+  display:flex; align-items:stretch;
+}
+.bar button{
+  flex:1; color:#fff; padding:20px 14px;
+  font-family:var(--display); font-size:24px; text-transform:uppercase; letter-spacing:.03em;
+}
+.bar button.prev{ flex:0 0 78px; border-right:1px solid #333; color:#9A9A9A; font-size:18px; }
+.bar button.go{ background:var(--red); }
+.bar button:active{ opacity:.8; }
+
+/* ---------- Rest overlay ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:90; background:var(--ink); color:#fff;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding: calc(var(--safe-t) + 24px) 24px calc(var(--safe-b) + 24px);
+  text-align:center;
+}
+.overlay.on{ display:flex; }
+.overlay .kicker{ color:#8A8A8A; }
+.overlay .clock{
+  font-family:var(--display); font-size:clamp(90px,34vw,180px); line-height:.85; margin:14px 0 6px;
+}
+.overlay .clock.zero{ color:var(--red); }
+.overlay .next{ font-size:15px; color:#B9B9B9; max-width:22em; margin-bottom:28px; }
+.overlay .acts{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.overlay .acts button{
+  border:2px solid #fff; color:#fff; padding:13px 22px;
+  font-weight:800; letter-spacing:.1em; text-transform:uppercase; font-size:14px;
+}
+.overlay .acts button.primary{ background:var(--red); border-color:var(--red); }
+
+/* ---------- Lists / history ---------- */
+.item{ padding:16px 20px; border-top:2px solid var(--rule); display:flex; gap:14px; align-items:baseline; }
+.item .d{ font-family:var(--display); font-size:19px; min-width:74px; }
+.item .b{ flex:1; }
+.item .b .t{ font-weight:700; }
+.item .b .s{ font-size:14px; color:var(--grey); }
+
+.tests{ margin-top:4px; }
+.test{ padding:18px 20px; border-top:2px solid var(--rule); }
+.test h3{ font-size:22px; }
+.test .tiers{ display:flex; gap:6px; margin:12px 0 10px; }
+.test .tiers div{
+  flex:1; padding:7px 4px; text-align:center; border:2px solid var(--rule);
+  font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; line-height:1.25;
+}
+.test .tiers div b{ display:block; font-family:var(--display); font-size:14px; letter-spacing:.04em; }
+.test .tiers div.hit{ background:var(--ink); color:#fff; border-color:var(--ink); }
+.test .tiers div.hit.elite{ background:var(--red); border-color:var(--red); }
+
+.grade{ font-family:var(--display); font-size:18px; text-transform:uppercase; margin-top:8px; }
+.grade.poor{ color:var(--grey); }
+.grade.lean{ color:var(--ink); }
+.grade.elite{ color:var(--red); }
+
+/* ---------- Settings ---------- */
+.fieldrow{ padding:18px 20px; border-top:2px solid var(--rule); }
+.fieldrow .kicker{ display:block; margin-bottom:8px; }
+.fieldrow input, .fieldrow select{
+  width:100%; border:2px solid var(--ink); padding:12px;
+  font-family:var(--display); font-size:26px; background:var(--paper); color:var(--ink);
+  -moz-appearance:textfield;
+}
+.fieldrow input::-webkit-outer-spin-button,.fieldrow input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.fieldrow select{ font-size:20px; }
+.rowbtns{ display:flex; gap:10px; padding:18px 20px; flex-wrap:wrap; }
+
+.toast{
+  position:fixed; left:50%; bottom:calc(var(--bar-h) + var(--safe-b) + 18px);
+  transform:translateX(-50%) translateY(14px);
+  background:var(--ink); color:#fff; padding:12px 20px;
+  font-weight:700; font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+  opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; z-index:120;
+  white-space:nowrap;
+}
+.toast.on{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+.empty{ padding:40px 20px; text-align:center; color:var(--grey); }
+.empty h3{ color:var(--ink); margin-bottom:10px; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important; }
+}
+:focus-visible{ outline:3px solid var(--red); outline-offset:2px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ HOME ============ -->
+  <section class="view on" id="v-home">
+    <div class="scroll">
+      <div class="hero">
+        <div class="wordmark">Michael<br><em>Fitness</em></div>
+        <div class="tag" id="homeTag">Lean Bastard</div>
+      </div>
+
+      <div class="upnext">
+        <div class="kicker">Up next</div>
+        <div class="phase" id="nowPhase">Phase 1 · Week 1</div>
+        <div class="phase prog" id="nowWorkout">Workout A</div>
+        <div class="weekbar" id="weekbar"></div>
+      </div>
+
+      <button class="btn-huge" id="startBtn">
+        <span class="sub">Begin session</span>
+        <span id="startLabel">Start Workout A</span>
+      </button>
+
+      <div class="strip" id="deltsStrip" hidden>
+        <div class="num" id="deltDay">1</div>
+        <div class="txt"><b>30 Days of Delts</b><span id="deltText">Today's delt work</span></div>
+      </div>
+
+      <button class="btn-block" id="toDelts">Delts<span class="meta" id="deltsMeta">Start the 30-day challenge</span></button>
+      <button class="btn-block" id="toStandards">Standards<span class="meta" id="standardsMeta">6 tests</span></button>
+      <button class="btn-block" id="toHistory">History<span class="meta" id="historyMeta">No sessions yet</span></button>
+      <button class="btn-block" id="toSettings">Settings<span class="meta" id="settingsMeta"></span></button>
+    </div>
+  </section>
+
+  <!-- ============ SESSION ============ -->
+  <section class="view" id="v-session">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" id="sessExit" aria-label="Leave session">&times;</button>
+        <div class="title" id="sessTitle">Workout A</div>
+        <button class="xbtn" id="sessFinish" aria-label="Finish session" style="font-size:15px;font-weight:800;letter-spacing:.1em;width:auto;padding:0 4px;">END</button>
+      </div>
+      <div class="segs" id="segs"></div>
+    </div>
+    <div class="scroll" id="blockWrap"></div>
+    <div class="bar">
+      <button class="prev" id="btnPrev">Back</button>
+      <button class="go" id="btnNext">Next</button>
+    </div>
+  </section>
+
+  <!-- ============ DELTS ============ -->
+  <section class="view" id="v-delts">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">30 Days of Delts</div>
+      </div>
+    </div>
+    <div class="scroll" id="deltsWrap"></div>
+  </section>
+
+  <!-- ============ STANDARDS ============ -->
+  <section class="view" id="v-standards">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">Lean Bastard Standards</div>
+      </div>
+    </div>
+    <div class="scroll" id="standardsWrap"></div>
+  </section>
+
+  <!-- ============ HISTORY ============ -->
+  <section class="view" id="v-history">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">History</div>
+      </div>
+    </div>
+    <div class="scroll" id="historyWrap"></div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section class="view" id="v-settings">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">Settings</div>
+      </div>
+    </div>
+    <div class="scroll" id="settingsWrap"></div>
+  </section>
+
+</div>
+
+<!-- Rest / hold overlay -->
+<div class="overlay" id="overlay">
+  <div class="kicker" id="ovKicker">Rest</div>
+  <div class="clock" id="ovClock">1:30</div>
+  <div class="next" id="ovNext"></div>
+  <div class="acts">
+    <button id="ovAdd">+30 sec</button>
+    <button class="primary" id="ovSkip">Skip</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================================================================
+   MICHAEL FITNESS
+   Offline-first workout logger. No server, no session to lose.
+   Every entry is written to localStorage the moment it is made.
+
+   TO ADD A PROGRAMME: add an object to PROGRAMMES below and set it
+   as `programme` in Settings. Nothing else needs to change.
+   ================================================================== */
+
+/* ---------- storage ---------- */
+var K = { set:'mf.v1.settings', act:'mf.v1.active', ses:'mf.v1.sessions', std:'mf.v1.standards', dlt:'mf.v1.delts', out:'mf.v1.outbox' };
+
+function load(key, dflt){
+  try{ var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : dflt; }
+  catch(e){ return dflt; }
+}
+function save(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e){ toast('Could not save — storage full?'); return false; }
+}
+
+var S   = load(K.set, { programme:'lean_bastard', week:1, next:'A', bodyweight:null, unit:'kg', syncUrl:'', syncToken:'' });
+var ACT = load(K.act, null);
+var SES = load(K.ses, []);
+var STD = load(K.std, []);
+var DLT = load(K.dlt, { start:null, days:{} });
+var OUT = load(K.out, []);   // sessions waiting to reach the Sheet
+
+function saveAll(){ save(K.set,S); save(K.act,ACT); save(K.ses,SES); save(K.std,STD); save(K.dlt,DLT); }
+
+/* ==================================================================
+   PROGRAMME DATA
+   k = how a set is logged:  'wr' weight+reps · 'reps' · 'time' · 'check'
+   {bw:25} in a target string renders as the load for 25% of bodyweight
+   ================================================================== */
+
+var WU1 = [
+  {c:'1',n:'Dead Hang',v:'baqUM1u-kUw',sets:[{l:'Hold',t:'60 sec total',k:'time'}]},
+  {c:'2',n:'Banded Chicken Wings',v:'arN2vsTMOyk',sets:[{l:'Set',t:'15 reps',k:'check'}]},
+  {c:'3',n:'Superman Hold',v:'q0gpXRK0Bzc',sets:[{l:'Hold',t:'60 sec total',k:'time'}]},
+  {c:'4',n:'Couch Stretch',v:'PzpJ2j3WbPU',sets:[{l:'Each leg',t:'60 sec per leg',k:'check'}]},
+  {c:'5',n:'Goblet Squat Hold',v:'XjQw-eB4ZE0',sets:[{l:'Hold',t:'60 sec total with {bw:25}',k:'time'}]},
+  {c:'6',n:'Wall Twist',v:'XgSYSCp6AXM',sets:[{l:'Set',t:'10 reps per side',k:'check'}]},
+  {c:'7',n:'Pogo Jumps',v:'O_NY9dSVV-0',sets:[{l:'Set 1',t:'20 sec',k:'check'},{l:'Set 2',t:'20 sec',k:'check'}]}
+];
+var WU2 = [
+  {c:'1',n:'Dead Hang',v:'baqUM1u-kUw',sets:[{l:'Hold',t:'75 sec total',k:'time'}]},
+  {c:'2',n:'Banded Chicken Wings',v:'arN2vsTMOyk',sets:[{l:'Set',t:'15 reps',k:'check'}]},
+  {c:'3',n:'Superman Hold',v:'q0gpXRK0Bzc',sets:[{l:'Hold',t:'75 sec total',k:'time'}]},
+  {c:'4',n:'Couch Stretch',v:'PzpJ2j3WbPU',sets:[{l:'Each leg',t:'60 sec per leg',k:'check'}]},
+  {c:'5',n:'Goblet Squat Hold',v:'XjQw-eB4ZE0',sets:[{l:'Hold',t:'90 sec total with {bw:25}',k:'time'}]},
+  {c:'6',n:'Wall Twist',v:'XgSYSCp6AXM',sets:[{l:'Set',t:'10 reps per side',k:'check'}]},
+  {c:'7',n:'Bench / Box Jumps',v:'NzV1h6fKmpA',note:'Rest 60 sec between sets.',sets:[{l:'Set 1',t:'5 reps',k:'check'},{l:'Set 2',t:'5 reps',k:'check'},{l:'Set 3',t:'5 reps (optional)',k:'check'}]}
+];
+var WU3 = [
+  {c:'1',n:'Dead Hang',v:'baqUM1u-kUw',sets:[{l:'Hold',t:'90 sec total',k:'time'}]},
+  {c:'2',n:'Banded Chicken Wings',v:'arN2vsTMOyk',sets:[{l:'Set',t:'15 reps',k:'check'}]},
+  {c:'3',n:'Superman Hold',v:'q0gpXRK0Bzc',sets:[{l:'Hold',t:'90 sec total',k:'time'}]},
+  {c:'4',n:'Couch Stretch',v:'PzpJ2j3WbPU',sets:[{l:'Each leg',t:'60 sec per leg',k:'check'}]},
+  {c:'5',n:'Goblet Squat Hold',v:'XjQw-eB4ZE0',sets:[{l:'Hold',t:'2 min total with {bw:25}',k:'time'}]},
+  {c:'6',n:'Wall Twist',v:'XgSYSCp6AXM',sets:[{l:'Set',t:'10 reps per side',k:'check'}]},
+  {c:'7',n:'Lateral Jumps (Heidens)',v:'U-lwctTOpq0',note:'Set 1 easy after the squat hold. Set 2 a little further. Set 3 all out. Rest 45-60 sec between sets.',sets:[{l:'Set 1',t:'5 jumps per side',k:'check'},{l:'Set 2',t:'5 jumps per side',k:'check'},{l:'Set 3',t:'5 jumps per side',k:'check'}]}
+];
+
+var PROGRAMMES = {
+
+lean_bastard: {
+  id:'lean_bastard',
+  name:'Lean Bastard',
+  by:'Joe DeFranco',
+  weeks:9,
+  order:['A','B','C'],
+  phases:[
+    { n:1, label:'Phase 1', from:1, to:3, warmup:WU1, workouts:{
+
+      A:[
+        {t:'Superset 1', rest:'30 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'1a',n:'Eccentric Chin-ups',v:'Yi7oSUSmfuE',
+           note:'Lower yourself in 5-15 seconds per rep. On the final rep of the last set, lower as slowly as you can without stopping, right down to lockout.',
+           sets:[{l:'Set 1',t:'3 reps',k:'wr'},{l:'Set 2',t:'3 reps',k:'wr'},{l:'Set 3',t:'3 reps · slowest lowering on the last one',k:'wr'}]},
+          {c:'1b',n:'Single-Arm DB Push Press',v:'ht4v44dXAJE',
+           note:'Fast press up, 5 second lowering on every rep.',
+           sets:[{l:'Set 1',t:'Warm-up · 5 reps (RIR 4-5)',k:'wr'},{l:'Set 2',t:'7-8 reps (RIR 0-1)',k:'wr'},{l:'Set 3',t:'6-8 reps (RIR 0-1)',k:'wr'}]}
+        ]},
+        {t:'Superset 2', rest:'30 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'2a',n:'Bridged Hamstring Walk-outs',v:'Q47btzeX2WQ',
+           sets:[{l:'Set 1',t:'5-8 reps',k:'reps'},{l:'Set 2',t:'5-8 reps',k:'reps'},{l:'Set 3',t:'AMRAP · butt never touches the floor',k:'reps'}]},
+          {c:'2b',n:'Reverse Nordics',v:'Z6pBmH42ETg',
+           sets:[{l:'Set 1',t:'6-10 reps (RIR 1-2)',k:'reps'},{l:'Set 2',t:'6-10 reps (RIR 1-2)',k:'reps'},{l:'Set 3',t:'AMRAP · near-perfect form',k:'reps'}]}
+        ]},
+        {t:'Superset 3', rest:'15 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'3a',n:'Eccentric Ring Push-ups',v:'I8eJ_gnyvG4',
+           note:'Set the rings to suit your strength. The lower they are, the harder it gets.',
+           sets:[{l:'Set 1',t:'6-10 reps · 5 sec lowering (RIR 1-2)',k:'reps'},{l:'Set 2',t:'6-10 reps · 5 sec lowering (RIR 1-2)',k:'reps'},{l:'Set 3',t:'AMRAP · hold the 5 sec lowering',k:'reps'}]},
+          {c:'3b',n:'Eccentric Band Pull-Aparts',v:'MFa1VktNocQ',
+           sets:[{l:'Set 1',t:'8-15 reps · 3-5 sec eccentric (RIR 0-2)',k:'reps'},{l:'Set 2',t:'8-15 reps (RIR 0-2)',k:'reps'},{l:'Set 3',t:'8-15 reps (RIR 0-2)',k:'reps'}]}
+        ]},
+        {t:'Superset 4', rest:'15 sec between exercises · 60 sec between supersets', restSec:60, ex:[
+          {c:'4a',n:'Zottman Curls',v:'prTc4d3eoRU',
+           note:'5 second lowering on every rep.',
+           sets:[{l:'Set 1',t:'8 reps (RIR 1-2)',k:'wr'},{l:'Set 2',t:'8 reps (RIR 1-2)',k:'wr'},{l:'Set 3',t:'6-10 reps (RIR 0)',k:'wr'}]},
+          {c:'4b',n:'Leg Lowerings w/ Hip-Up',v:'Wg1xzd_kYig',
+           sets:[{l:'Set 1',t:'6-12 reps · 5 sec eccentric (RIR 0-2)',k:'reps'},{l:'Set 2',t:'6-12 reps (RIR 0-2)',k:'reps'},{l:'Set 3',t:'6-12 reps (RIR 0-2)',k:'reps'}]}
+        ]}
+      ],
+
+      B:[
+        {t:'Superset 1', rest:'30 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'1a',n:'Single Leg HTK Hip Thrust & Hold',v:'bN9CE9NnP8w',
+           note:'Hold every rep at the top for a 2-count. Strong leg first, then match the time on the weaker leg, using rest-pause if you need to.',
+           sets:[{l:'Set 1',t:'10 reps per leg · final rep held 10 sec',k:'reps'},{l:'Set 2',t:'10 reps per leg · final rep held 10 sec',k:'reps'},{l:'Set 3',t:'10 reps per leg · final rep ALAP',k:'time'}]},
+          {c:'1b',n:'Inverted Row Hold w/ Yoga Block',v:'l3dZogbt3Ro',
+           sets:[{l:'Set 1',t:'50% of your projected max time',k:'time'},{l:'Set 2',t:'ALAP',k:'time'},{l:'Set 3',t:'ALAP',k:'time'}]}
+        ]},
+        {t:'Superset 2', rest:'30 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'2a',n:'ISO-Lunge',v:'W5N7GHZL7lE',
+           note:'Stronger leg first, match the time on the weaker leg. If you pass 60 sec on both legs for sets 2 and 3, add dumbbells at 5% of bodyweight in each hand ({bw:5} each) next week.',
+           sets:[{l:'Set 1',t:'30 sec per leg',k:'time'},{l:'Set 2',t:'ALAP per leg',k:'time'},{l:'Set 3',t:'ALAP per leg',k:'time'}]},
+          {c:'2b',n:'Ring Push-ups w/ 2-Sec ISO-Holds',v:'x7guN3lfJiI',
+           sets:[{l:'Set 1',t:'6-10 reps · 2-count pause at the bottom (RIR 0-2)',k:'reps'},{l:'Set 2',t:'6-10 reps (RIR 0-2)',k:'reps'},{l:'Set 3',t:'Hold the bottom position ALAP',k:'time'}]}
+        ]},
+        {t:'Superset 3', rest:'60 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'3a',n:'Handstand Push-up Hold',v:'X3lUeFQUjr0',alt:{n:'Pike Push-up Hold',v:'D16j-sSMQs8'},
+           sets:[{l:'Set 1',t:'ALAP',k:'time'},{l:'Set 2',t:'ALAP',k:'time'}]},
+          {c:'3b',n:'Flexed Arm Hang',v:'_p66DFFPlxk',
+           sets:[{l:'Set 1',t:'ALAP',k:'time'},{l:'Set 2',t:'ALAP',k:'time'}]}
+        ]},
+        {t:'Superset 4', rest:'15 sec between exercises · 60 sec between supersets', restSec:60, ex:[
+          {c:'4a',n:'ISO-Crunch Deadbugs w/ Yoga Block',v:'QF9NPzJFsGw',
+           sets:[{l:'Set 1',t:'6-10 reps per leg',k:'reps'},{l:'Set 2',t:'6-10 reps per leg',k:'reps'}]},
+          {c:'4b',n:'Floor Band Pull-Aparts w/ ISO-Holds',v:'JKT5SvDrUug',
+           note:'Drive your pinkies through the floor on every rep. Keep them in contact with the floor for 10 seconds on the final rep.',
+           sets:[{l:'Set 1',t:'10 reps',k:'reps'},{l:'Set 2',t:'10 reps',k:'reps'}]}
+        ]}
+      ],
+
+      C:[
+        {t:'Exercise 1', rest:'60 sec after the warm-up set · 3 min between work sets', restSec:180, ex:[
+          {c:'1',n:'Deficit Bulgarian Split Squats',v:'UYZbyIY_Sa8',
+           sets:[{l:'Set 1',t:'Warm-up · 6 reps (RIR 5-6)',k:'wr'},{l:'Set 2',t:'6 reps (RIR 3-4)',k:'wr'},{l:'Set 3',t:'6 reps (RIR 1-2)',k:'wr'},{l:'Set 4',t:'6 reps (RIR 0-1)',k:'wr'}]}
+        ]},
+        {t:'Exercise 2', rest:'Straight into it', restSec:120, ex:[
+          {c:'2',n:'Bulgarian Split Squat D.I.E. Ladder',v:'Am3TvCxqMF4',
+           note:'Descending ISO-Hold & Explode. Hold 10% of bodyweight in each hand ({bw:10} each). Watch the demo before you try it.',
+           sets:[{l:'Ladder',t:'1 set x 21 reps per leg',k:'wr'}]}
+        ]},
+        {t:'Exercise 3', rest:'60 sec after the warm-up set · 2-3 min between work sets', restSec:150, ex:[
+          {c:'3',n:'Dead-Stop One-Arm DB Rows',v:'TQb_LpOZS5M',
+           sets:[{l:'Set 1',t:'Warm-up · 6 reps (RIR 5-6)',k:'wr'},{l:'Set 2',t:'8-10 reps (RIR 1-2)',k:'wr'},{l:'Set 3',t:'8-10 reps (RIR 0-1)',k:'wr'}]}
+        ]},
+        {t:'Exercise 4', rest:'Then move on', restSec:120, ex:[
+          {c:'4',n:'Ascending Ladder One-Arm DB Rows',v:'P1SdNCGcAHw',
+           note:'Use the weight from your first warm-up set of Dead-Stop Rows.',
+           sets:[{l:'Ladder',t:'1 set x 21 reps per arm',k:'wr'}]}
+        ]},
+        {t:'Exercise 5', rest:'60 sec after the warm-up set · 2-3 min between work sets', restSec:150, ex:[
+          {c:'5',n:'One-Arm DB Floor Press',v:'E6fsFHG7um8',
+           sets:[{l:'Set 1',t:'Warm-up · 6 reps (RIR 5-6)',k:'wr'},{l:'Set 2',t:'8-10 reps (RIR 2)',k:'wr'},{l:'Set 3',t:'8-10 reps (RIR 0-1)',k:'wr'},{l:'Set 4',t:'6-10 reps (RIR 0)',k:'wr'}]}
+        ]},
+        {t:'Exercise 6', rest:'Then move on', restSec:90, ex:[
+          {c:'6',n:'Dead-Stop DB Alternating Floor Press',v:'3y8Vlau5Al4',
+           note:'20% less weight than your final set of One-Arm Floor Press.',
+           sets:[{l:'AMRAP',t:'1 set x as many reps as possible',k:'wr'}]}
+        ]},
+        {t:'Exercise 7', rest:'90 sec between sets', restSec:90, ex:[
+          {c:'7',n:"One-Arm Farmer's March",v:'m2t1G6QudtM',
+           note:'Hold 25% of your bodyweight ({bw:25}).',
+           sets:[{l:'Left',t:'12-15 steps each leg, weight in your left hand',k:'wr'},{l:'Right',t:'12-15 steps each leg, weight in your right hand',k:'wr'}]}
+        ]}
+      ]
+    }},
+
+    { n:2, label:'Phase 2', from:4, to:6, warmup:WU2, workouts:{
+
+      A:[
+        {t:'Superset 1', rest:'30 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'1a',n:'Inverted BW Rocking Leg Curls',v:'6hvubAvZftk',
+           note:"Don't go past 20 reps on the AMRAP. If you can, drape a chain over your waist or wear a vest.",
+           sets:[{l:'Set 1',t:'10-12 reps',k:'reps'},{l:'Set 2',t:'10-12 reps',k:'reps'},{l:'Set 3',t:'AMRAP',k:'reps'}]},
+          {c:'1b',n:'Inverted Ring Rows',v:'dgjInjm7uNc',
+           sets:[{l:'Set 1',t:'10-12 reps (RIR 1-2)',k:'reps'},{l:'Set 2',t:'10-12 reps (RIR 1-2)',k:'reps'},{l:'Set 3',t:'AMRAP',k:'reps'}]}
+        ]},
+        {t:'Exercises 2 & 3', rest:'2-3 min between step-up sets · then straight into the step-overs', restSec:150, ex:[
+          {c:'2',n:"Step-ups, holding DB's",v:'sIcCjFJLPR0',
+           note:'After your third set, go immediately into the Bench Step-over & Back.',
+           sets:[{l:'Set 1',t:'6 reps per leg (RIR 2-3)',k:'wr'},{l:'Set 2',t:'5 reps per leg (RIR 1-2)',k:'wr'},{l:'Set 3',t:'5 reps per leg (RIR 0-1)',k:'wr'}]},
+          {c:'3',n:'Bench Step-over & Back',v:'yu2E2RNFnH4',
+           sets:[{l:'AMRAP',t:'As many as possible per leg',k:'reps'}]}
+        ]},
+        {t:'Superset 4', rest:'30 sec between exercises · 2 min between supersets', restSec:120, ex:[
+          {c:'4a',n:'Slight Incline DB Bench Press',v:'7mGOwHInIX4',
+           sets:[{l:'Warm-up',t:'6-8 reps',k:'wr'},{l:'Set 1',t:'10-12 reps (RIR 3-4)',k:'wr'},{l:'Set 2',t:'8-10 reps (RIR 1-2)',k:'wr'},{l:'Set 3',t:'6-10 reps (RIR 0)',k:'wr'}]},
+          {c:'4b',n:'Prone Y-Press',v:'mNdhbM4kKmY',alt:{n:'ISO-Hold YWT Ladder',v:'Yh96WoMXMh0'},
+           sets:[{l:'Set 1',t:'10-12 reps',k:'reps'},{l:'Set 2',t:'10-12 reps',k:'reps'},{l:'Set 3',t:'ISO-Hold YWT Ladder',k:'time'}]}
+        ]},
+        {t:'Superset 5', rest:'30 sec between exercises · 1-2 min between supersets', restSec:90, ex:[
+          {c:'5a',n:'Bench Diamond Push-ups',v:'KySdEk2k2do',
+           sets:[{l:'Set 1',t:'AMRAP',k:'reps'},{l:'Set 2',t:'AMRAP',k:'reps'}]},
+          {c:'5b',n:'Bent-Knee Copenhagen Side Plank',v:'NFmIU9IOIog',
+           sets:[{l:'Set 1',t:'15-30 sec per side',k:'time'},{l:'Set 2',t:'15-30 sec per side',k:'time'}]}
+        ]}
+      ],
+
+      B:[
+        {t:'Exercise 1', rest:'2-3 min between sets', restSec:150, ex:[
+          {c:'1',n:"Single Leg Skater Squats, holding DB's",v:'RtiVxTsH_OU',
+           sets:[{l:'Set 1',t:'Warm-up · 8 reps per leg',k:'wr'},{l:'Set 2',t:'6-10 reps per leg (RIR 1-2)',k:'wr'},{l:'Set 3',t:'6-10 reps per leg (RIR 1-2)',k:'wr'}]}
+        ]},
+        {t:'Exercise 2', rest:'30 sec between legs · 90 sec between sets', restSec:90, ex:[
+          {c:'2',n:'Weighted ISO-Hold Lunge',v:'O0FMK0TYSOU',
+           note:'Hold 10% of bodyweight in each hand ({bw:10} each). Stronger leg first, match the time on the weaker leg. Record the 2-set total and beat it next week.',
+           sets:[{l:'Set 1',t:'ALAP per leg',k:'time'},{l:'Set 2',t:'ALAP per leg',k:'time'}]}
+        ]},
+        {t:'Superset 3', rest:'60 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'3a',n:'Seated Modified One-Arm Overhead DB Press',v:'jVBYfG8nPbc',
+           sets:[{l:'Set 1',t:'12 reps per arm (RIR 3)',k:'wr'},{l:'Set 2',t:'10 reps per arm (RIR 1-2)',k:'wr'},{l:'Set 3',t:'8-10 reps per arm (RIR 0-1)',k:'wr'}]},
+          {c:'3b',n:'Assisted Ring Pull-ups',v:'E1vUu10AsTo',alt:{n:'L-Sit Ring Pull-ups',v:'QbRRlOMRLFI'},
+           sets:[{l:'Set 1',t:'8-10 reps',k:'reps'},{l:'Set 2',t:'6-10 reps (RIR 1)',k:'reps'},{l:'Set 3',t:'AMRAP',k:'reps'}]}
+        ]},
+        {t:'Exercise 4', rest:'2 min between sets', restSec:120, ex:[
+          {c:'4',n:"Single Leg Hand-Supported DB RDL's",v:'CguudwGX-gM',
+           sets:[{l:'Set 1',t:'8-10 reps per leg (RIR 2-3)',k:'wr'},{l:'Set 2',t:'6-10 reps per leg (RIR 1-2)',k:'wr'},{l:'Set 3',t:'6-10 reps per leg (RIR 1-2)',k:'wr'}]}
+        ]},
+        {t:'Superset 5', rest:'30-60 sec between exercises · 60-90 sec between supersets', restSec:90, ex:[
+          {c:'5a',n:'JM Push-ups',v:'tOlNEU9qhRs',
+           note:'On set 2: AMRAP, rest 30 sec, then squeeze out 1-5 more.',
+           sets:[{l:'Set 1',t:'8-10 reps (RIR 3-4)',k:'reps'},{l:'Set 2',t:'AMRAP + rest-pause',k:'reps'}]},
+          {c:'5b',n:'90-Degree Chin-up Hold',v:'6CrNapSBG-0',
+           note:"If you can't hold this for 15 sec, swap in 2 sets of a bicep curl variation.",
+           sets:[{l:'Set 1',t:'ALAP',k:'time'},{l:'Set 2',t:'ALAP',k:'time'}]}
+        ]}
+      ],
+
+      C:[
+        {t:'Circuit 1', rest:'Weight vest at 10-15% of bodyweight for this workout', restSec:0, ex:[
+          {c:'1',n:'PPL 300 Circuit',v:'5duKKxVsRco',
+           note:'10 rounds as fast as possible, technique pristine on all 300 reps. Per round: 8 Inverted Ring Rows (knees bent, feet flat), 10 Push-ups (hands on dumbbells or blocks), 12 FTF Squats (fingers to floor, chest up). Beat your time each week.',
+           sets:[{l:'Total',t:'10 rounds for time',k:'time'}]}
+        ]},
+        {t:'Exercise 2', rest:'90 sec between sets', restSec:90, ex:[
+          {c:'2',n:"DB Farmer's March",v:'ri1WSrLw8Mw',
+           note:'30% of bodyweight per hand ({bw:30} each). Week 4: 10 reps per leg. Week 5: 12. Week 6: 15.',
+           sets:[{l:'Set 1',t:'Reps per leg for this week',k:'wr'},{l:'Set 2',t:'Reps per leg for this week',k:'wr'}]}
+        ]}
+      ]
+    }},
+
+    { n:3, label:'Phase 3', from:7, to:9, warmup:WU3, workouts:{
+
+      A:[
+        {t:'Exercise 1', rest:'10 minute block', restSec:0, ex:[
+          {c:'1',n:'Chin-ups',v:'VzEtH_IsrYE',alt:{n:'Assisted Ring Pull-ups',v:'E1vUu10AsTo'},
+           note:"AMRAP in 10 minutes. Don't go to failure in the first 5 minutes or you'll burn out. Record the total and beat it next week.",
+           sets:[{l:'Total',t:'Reps in 10 minutes',k:'reps'}]}
+        ]},
+        {t:'Exercise 2', rest:'3-4 min between sets', restSec:210, ex:[
+          {c:'2',n:'DB Duck Squats',v:'60OxlreDv_U',
+           note:'Lifting straps recommended.',
+           sets:[{l:'Set 1',t:'10 reps per leg (RIR 4-5)',k:'wr'},{l:'Set 2',t:'8 reps per leg (RIR 2-3)',k:'wr'},{l:'Set 3',t:'6 reps per leg (RIR 1-2)',k:'wr'},{l:'Set 4',t:'6 reps per leg (RIR 0-1)',k:'wr'},{l:'Set 5',t:'15+ per leg · same weight as set 1',k:'wr'}]}
+        ]},
+        {t:'Exercise 3 · 6-12-25', rest:'3-5 min between rounds', restSec:240, ex:[
+          {c:'3',n:'Chest 6-12-25',v:'sLuisgzpe2o',
+           note:'Two warm-up sets of Slight Decline Pause DB Bench (4-6 reps) before you start. Each round: 6 Slight Decline Pause DB Bench (RIR 0-2), 12 Slight Decline End-Range DB Flys (RIR 1-3), 25 Push-ups (rest-pause if needed).',
+           sets:[{l:'Round 1',t:'6 · 12 · 25',k:'wr'},{l:'Round 2',t:'6 · 12 · 25',k:'wr'}]},
+          {c:'',n:'Slight Decline Pause DB Bench',v:'REdrSdtWGx4',sets:[]},
+          {c:'',n:'Slight Decline End-Range DB Flys',v:'Jt-vA2mEP9U',sets:[]},
+          {c:'',n:'Push-ups',v:'8S4lMPNQeow',sets:[]}
+        ]},
+        {t:'Exercise 4', rest:'Finish', restSec:0, ex:[
+          {c:'4',n:'Banded Locust Pose',v:'Csy0822JzgE',
+           note:'Accumulate 2 total minutes. Stop the clock whenever you need a break.',
+           sets:[{l:'Total',t:'2 minutes accumulated',k:'time'}]}
+        ]}
+      ],
+
+      B:[
+        {t:'Superset 1', rest:'30 sec between exercises · 2 min between supersets', restSec:120, ex:[
+          {c:'1a',n:'Goblet Cossack Squats',v:'eH-V4tRsz2k',
+           sets:[{l:'Set 1',t:'Bodyweight · 8 reps per leg',k:'reps'},{l:'Set 2',t:'DB or KB · 6 reps per leg (RIR 1-2)',k:'wr'},{l:'Set 3',t:'DB or KB · 6 reps per leg (RIR 1-2)',k:'wr'}]},
+          {c:'1b',n:'Seated Bent-Over DB Shrugs',v:'Gj8a-Wv2JKg',
+           note:"Straps recommended to save your grip for the Farmer's March.",
+           sets:[{l:'Set 1',t:'12 reps (RIR 1-2)',k:'wr'},{l:'Set 2',t:'12 reps (RIR 1-2)',k:'wr'},{l:'Set 3',t:'12 reps (RIR 1-2)',k:'wr'}]}
+        ]},
+        {t:'Exercise 2', rest:'90 sec between sets', restSec:90, ex:[
+          {c:'2',n:"DB Farmer's March",v:'ri1WSrLw8Mw',
+           note:'40% of bodyweight per hand ({bw:40} each). Week 7: 8 reps per leg. Week 8: 10. Week 9: 12.',
+           sets:[{l:'Set 1',t:'Reps per leg for this week',k:'wr'},{l:'Set 2',t:'Reps per leg for this week',k:'wr'}]}
+        ]},
+        {t:'Exercise 3 · Circuit', rest:'3-4 min between rounds', restSec:210, ex:[
+          {c:'3',n:'Medial Delt MASSacre 5.1',v:'nAl-yH0AhVk',
+           note:'Each round: 8-10 Pike Push-ups, 8-10 Standing Lateral Raises, 8-10 Bottom-Half Lateral Raises, 10-12 Lu Plate Raises.',
+           sets:[{l:'Round 1',t:'Full circuit',k:'wr'},{l:'Round 2',t:'Full circuit',k:'wr'},{l:'Round 3',t:'Optional',k:'wr'}]}
+        ]},
+        {t:'Superset 4', rest:'15 sec between exercises · 90 sec between supersets', restSec:90, ex:[
+          {c:'4a',n:'Jungle Gym Tricep Extensions',v:'X1geziwPZh0',
+           sets:[{l:'Set 1',t:'8-12 reps (RIR 1-2)',k:'reps'},{l:'Set 2',t:'8-12 reps (RIR 1-2)',k:'reps'},{l:'Set 3',t:'AMRAP',k:'reps'}]},
+          {c:'4b',n:'Alternate DB Curls',v:'ix65D8Juw-4',
+           sets:[{l:'Set 1',t:'8 reps (RIR 1-2)',k:'wr'},{l:'Set 2',t:'8 reps (RIR 1-2)',k:'wr'},{l:'Set 3',t:'8+ reps (RIR 0)',k:'wr'}]}
+        ]},
+        {t:'Superset 5', rest:'Back to back, no rest · 90 sec between supersets', restSec:90, ex:[
+          {c:'5a',n:'Isometric Bicep Curl Carry',v:'z9Db4ad4Qbw',
+           sets:[{l:'Set 1',t:'45-60 sec',k:'time'},{l:'Set 2',t:'45-60 sec',k:'time'}]},
+          {c:'5b',n:'Sprinter Sit-ups',v:'XjXyFvFGaA4',
+           sets:[{l:'Set 1',t:'20 total reps (10 per side)',k:'reps'},{l:'Set 2',t:'20 total reps (10 per side)',k:'reps'}]}
+        ]}
+      ],
+
+      C:[
+        {t:'30 Minutes of PPL Hell', rest:'One 30-minute block', restSec:0, ex:[
+          {c:'1',n:'30 Minutes of PPL Hell',v:'dDH3VTRFEVs',
+           note:'As many rounds as possible in 30 minutes. Per round: 6 One-Arm DB Rows per arm, 6 Goblet Squats, 6 Shoulder-Touch Push-ups (3 per arm). Use 25-30% of bodyweight ({bw:25} to {bw:30}). Two weights saves you bending down every round. Do a little more work each week.',
+           sets:[{l:'Rounds',t:'Total rounds in 30 minutes',k:'reps'}]},
+          {c:'',n:'One-Arm DB Rows',v:'Tq5jAoivk18',sets:[]},
+          {c:'',n:'Goblet Squats',v:'hPbQ3AUVAYQ',sets:[]},
+          {c:'',n:'Shoulder-Touch Push-ups',v:'icbhjtE7DiM',sets:[]}
+        ]}
+      ]
+    }}
+  ]
+}
+
+};
+
+/* ---------- Standards ---------- */
+var STANDARDS = [
+  {id:'deadhang', n:'Dead Hang', v:'baqUM1u-kUw', k:'time', how:'Overhand grip, arms fully extended, feet off the ground. Breathe normally. The clock stops when you let go.', tiers:['Under 60 sec','60-119 sec','2 min +'], lean:60, elite:120},
+  {id:'superman', n:'Superman Hold', v:'q0gpXRK0Bzc', k:'time', how:'Face down, arms overhead in a Y with thumbs up. Lift arms, chest and legs. No resting.', tiers:['Under 60 sec','60-119 sec','2 min +'], lean:60, elite:120},
+  {id:'lowpush', n:'Low Push-Up Hold', k:'time', how:'Bottom of a push-up, chest hovering above the floor, straight line head to heels, hips up.', tiers:['Under 60 sec','60-119 sec','2 min +'], lean:60, elite:120},
+  {id:'goblet', n:'Goblet Squat Hold', v:'XjQw-eB4ZE0', k:'time', how:'Hold 25% of bodyweight ({bw:25}) at chest level. Toes slightly out, deep squat, heels flat, chest tall.', tiers:['Under 60 sec','60-119 sec','2 min +'], lean:60, elite:120},
+  {id:'isolunge', n:'Iso-Hold Lunge', v:'W5N7GHZL7lE', k:'time', how:'Bottom of a split squat, front foot flat, rear knee hovering. Upright torso, no shifting. Both legs.', tiers:['Under 60 sec','60-119 sec','2 min +'], lean:60, elite:120},
+  {id:'farmers', n:"Barefoot Farmer's March", v:'m2t1G6QudtM', k:'load', how:'Shoes off, no straps. A weight in each hand, 10 controlled reps per leg, knee above hip height with a split-second pause.', tiers:['Under 40% BW','40% BW','50% BW'], lean:40, elite:50, pct:true}
+];
+
+/* ---------- 30 Days of Delts ---------- */
+var DELTS = {
+  name:'30 Days of Delts',
+  days:30,
+  blocks:[
+    { from:1, to:14, label:'Weeks 1 & 2',
+      lift:[
+        {id:'d-ohp', pos:'Start of your workout', n:'ISO-Hold DB Overhead Press', t:'1 set x ALAP at lockout, using your 15-20 rep max weight', k:'time'},
+        {id:'d-lat', pos:'End of your workout', n:'ISO-Hold Lateral Raise', t:'1 set x ALAP with 1.25, 2.5 or 5kg dumbbells', k:'time'}
+      ],
+      rest:[ {id:'d-y', pos:'Any time of day', n:'Y-Hold', t:'1 set x ALAP. Beat your previous time.', k:'time'} ]
+    },
+    { from:15, to:30, label:'Weeks 3 & 4',
+      lift:[
+        {id:'d-ohp', pos:'Start of your workout', n:'ISO-Hold DB Overhead Press', t:'1 set x ALAP at lockout. Go up 2.5kg from weeks 1 and 2.', k:'time'},
+        {id:'d-lat', pos:'End of your workout', n:'ISO-Hold Lateral Raise', t:'1 set x ALAP, rest 15 sec, then straight into regular Lateral Raises for max reps, partials included, until you cannot get past 45 degrees.', k:'time'},
+        {id:'d-latreps', pos:'', n:'Lateral Raise AMRAP', t:'Reps after the hold', k:'reps'}
+      ],
+      rest:[ {id:'d-y', pos:'Any time of day', n:'Y-Hold', t:'1 set x ALAP. Beat your previous time.', k:'time'} ]
+    }
+  ],
+  notes:'ALAP means as long as possible. Pick a weight and hold until you physically cannot. Start light on the lateral raise holds, 1.25 to 5kg is the range, no ego. Two extra minutes a day, added to whatever programme you are running.'
+};
+
+/* ==================================================================
+   HELPERS
+   ================================================================== */
+function $(id){ return document.getElementById(id); }
+function el(tag, cls, html){ var n=document.createElement(tag); if(cls) n.className=cls; if(html!=null) n.innerHTML=html; return n; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+var toastTimer;
+function toast(msg){
+  var t=$('toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('on'); }, 1900);
+}
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.round(sec));
+  var m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + (s<10?'0':'') + s;
+}
+
+/* bodyweight tokens: {bw:25} -> "22 kg" */
+function bwText(str){
+  if(str==null) return '';
+  return String(str).replace(/\{bw:(\d+(?:\.\d+)?)\}/g, function(_, pct){
+    if(!S.bodyweight) return pct+'% BW';
+    var v = S.bodyweight * (parseFloat(pct)/100);
+    return (Math.round(v*2)/2) + ' ' + S.unit;
+  });
+}
+
+function phaseForWeek(prog, wk){
+  for(var i=0;i<prog.phases.length;i++){ if(wk>=prog.phases[i].from && wk<=prog.phases[i].to) return prog.phases[i]; }
+  return prog.phases[prog.phases.length-1];
+}
+function prog(){ return PROGRAMMES[S.programme] || PROGRAMMES.lean_bastard; }
+
+/* personal bests, derived from the session log */
+function bestFor(exName, kind){
+  var best=null;
+  for(var i=0;i<SES.length;i++){
+    var e = SES[i].entries || [];
+    for(var j=0;j<e.length;j++){
+      if(e[j].n !== exName) continue;
+      if(kind==='time' && e[j].sec!=null && (best==null || e[j].sec>best)) best=e[j].sec;
+      if(kind==='reps' && e[j].reps!=null && (best==null || e[j].reps>best)) best=e[j].reps;
+      if(kind==='wr' && e[j].weight!=null && (best==null || e[j].weight>best)) best=e[j].weight;
+    }
+  }
+  return best;
+}
+
+/* ==================================================================
+   GOOGLE SHEET SYNC
+   The local write is the source of truth and always happens first.
+   The upload is best-effort: anything that fails sits in the outbox
+   and goes up next time the app is opened with a signal.
+   ================================================================== */
+var syncing = false;
+
+function queueUpload(session){
+  OUT.push(session);
+  save(K.out, OUT);
+  flushOutbox();
+}
+
+function flushOutbox(){
+  if(syncing || !OUT.length || !S.syncUrl) return;
+  syncing = true;
+
+  var next = OUT[0];
+  // Apps Script does not answer CORS preflight, so send this as plain
+  // text. The body is still JSON and the script still parses it as JSON.
+  fetch(S.syncUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ token: S.syncToken || '', session: next })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(res){
+    syncing = false;
+    if(res && res.ok){
+      OUT.shift(); save(K.out, OUT);
+      updateSyncLine();
+      if(OUT.length) flushOutbox();     // keep going
+    } else {
+      updateSyncLine(res && res.error ? res.error : 'rejected');
+    }
+  })
+  .catch(function(){
+    syncing = false;
+    updateSyncLine();                   // no signal: try again later
+  });
+}
+
+function syncStatus(){
+  if(!S.syncUrl) return 'Not connected';
+  if(OUT.length) return OUT.length + ' session' + (OUT.length>1?'s':'') + ' waiting to upload';
+  return 'All sessions backed up';
+}
+function updateSyncLine(err){
+  var n = document.getElementById('syncLine');
+  if(n) n.textContent = err ? ('Last attempt failed: ' + err) : syncStatus();
+}
+
+/* Pull everything back from the Sheet. Used on a new phone. */
+function restoreFromSheet(btn){
+  if(!S.syncUrl){ toast('Add the Sheet URL first'); return; }
+  btn.textContent = 'Restoring...';
+  var url = S.syncUrl + (S.syncUrl.indexOf('?')>-1?'&':'?') +
+            'token=' + encodeURIComponent(S.syncToken || '');
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res || !res.ok) throw new Error(res && res.error ? res.error : 'bad response');
+      var have = {};
+      SES.forEach(function(s){ have[String(s.id)] = true; });
+      var added = 0;
+      (res.sessions||[]).forEach(function(s){
+        if(have[String(s.id)]) return;      // never duplicate
+        SES.push(s); added++;
+      });
+      SES.sort(function(a,b){ return String(a.date).localeCompare(String(b.date)); });
+      save(K.ses, SES);
+      btn.textContent = 'Restore from Sheet';
+      renderHome();
+      toast(added ? (added + ' session' + (added>1?'s':'') + ' restored') : 'Nothing new to restore');
+    })
+    .catch(function(e){
+      btn.textContent = 'Restore from Sheet';
+      toast('Could not reach the Sheet');
+    });
+}
+
+/* ---------- wake lock ---------- */
+var wakeLock=null;
+async function keepAwake(){
+  try{
+    if('wakeLock' in navigator && !wakeLock){
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', function(){ wakeLock=null; });
+    }
+  }catch(e){ /* not supported, or denied — nothing to do */ }
+}
+document.addEventListener('click', keepAwake, {passive:true});
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='visible'){ keepAwake(); refreshRunningClocks(); flushOutbox(); }
+});
+
+/* ---------- beep ---------- */
+function beep(){
+  try{
+    var C = window.AudioContext || window.webkitAudioContext; if(!C) return;
+    var ctx = new C(), o = ctx.createOscillator(), g = ctx.createGain();
+    o.type='square'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.25, ctx.currentTime+.01);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+.45);
+    o.start(); o.stop(ctx.currentTime+.5);
+  }catch(e){}
+  if(navigator.vibrate) navigator.vibrate([180,90,180]);
+}
+
+/* ==================================================================
+   VIEWS
+   ================================================================== */
+function show(id){
+  var vs = document.querySelectorAll('.view');
+  for(var i=0;i<vs.length;i++) vs[i].classList.remove('on');
+  $('v-'+id).classList.add('on');
+  var sc = $('v-'+id).querySelector('.scroll'); if(sc) sc.scrollTop=0;
+}
+
+/* ---------- Home ---------- */
+function renderHome(){
+  var p = prog(), ph = phaseForWeek(p, S.week);
+  $('homeTag').textContent = p.name + ' · ' + p.by;
+  $('nowPhase').textContent = ph.label + ' · Week ' + S.week;
+  $('nowWorkout').textContent = 'Workout ' + S.next;
+  $('startLabel').textContent = (ACT ? 'Resume Workout ' + ACT.workout : 'Start Workout ' + S.next);
+  $('startBtn').querySelector('.sub').textContent = ACT ? 'Session in progress' : 'Begin session';
+
+  var wb = $('weekbar'); wb.innerHTML='';
+  for(var w=1; w<=p.weeks; w++){
+    var s = el('span'); if(w<S.week) s.className='done'; if(w===S.week) s.className='cur'; wb.appendChild(s);
+  }
+
+  // Delts strip
+  var d = deltsToday();
+  if(d){
+    $('deltsStrip').hidden = false;
+    $('deltDay').textContent = d.day;
+    $('deltText').textContent = d.isLift ? 'Lifting day: press hold to start, lateral hold to finish' : 'Rest day: Y-Hold, any time';
+    $('deltsMeta').textContent = 'Day ' + d.day + ' of 30';
+  } else {
+    $('deltsStrip').hidden = true;
+    $('deltsMeta').textContent = DLT.start ? 'Challenge complete' : 'Start the 30-day challenge';
+  }
+
+  $('historyMeta').textContent = SES.length ? SES.length + ' session' + (SES.length>1?'s':'') + ' logged' : 'No sessions yet';
+  $('standardsMeta').textContent = STD.length ? 'Last tested ' + shortDate(STD[STD.length-1].date) : '6 tests · not taken yet';
+  $('settingsMeta').textContent = S.bodyweight ? S.bodyweight + ' ' + S.unit : 'Set your bodyweight';
+}
+
+function shortDate(iso){
+  var d = new Date(iso);
+  return d.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+}
+
+/* ==================================================================
+   SESSION
+   ================================================================== */
+function buildSession(letter){
+  var p = prog(), ph = phaseForWeek(p, S.week);
+  var blocks = [];
+
+  // warm-up as one screen: every item is a single tap to confirm
+  blocks.push({ t:'Warm-up', rest:'Do this before every workout', restSec:0, warm:true,
+    ex: ph.warmup.map(function(x){
+      return { c:x.c, n:x.n, v:x.v, note:x.note,
+               sets:[{ l:'', t:(x.sets||[]).map(function(s){ return s.t; }).join(' · '), k:'check' }] };
+    }) });
+
+  // delts: press hold opens the session
+  var d = deltsToday();
+  if(d && d.isLift && d.work.length){
+    blocks.push({ t:'Delts · Before you lift', rest:'Two extra minutes. Added to whatever you are running.', restSec:0, delt:'start',
+      ex:[{c:'D', n:d.work[0].n, note:d.work[0].t, sets:[{l:'Hold', t:'As long as possible', k:'time'}], deltId:d.work[0].id}] });
+  }
+
+  var w = ph.workouts[letter] || [];
+  for(var i=0;i<w.length;i++) blocks.push(w[i]);
+
+  // delts: lateral hold closes it
+  if(d && d.isLift && d.work.length>1){
+    var tail = d.work.slice(1).map(function(x){
+      return {c:'D', n:x.n, note:x.t, sets:[{l: x.k==='time'?'Hold':'Reps', t: x.k==='time'?'As long as possible':'Max reps, partials included', k:x.k}], deltId:x.id};
+    });
+    blocks.push({ t:'Delts · Finisher', rest:'Last thing you do today.', restSec:0, delt:'end', ex:tail });
+  }
+
+  return {
+    programme:S.programme, workout:letter, week:S.week, phase:ph.n,
+    startedAt:new Date().toISOString(), i:0, blocks:blocks, data:{}
+  };
+}
+
+function syncDelts(){
+  if(!ACT) return;
+  var has = ACT.blocks.some(function(b){ return b.delt; });
+  var d = deltsToday();
+  if(!d || !d.isLift || !d.work.length || has) return;
+  var fresh = buildSession(ACT.workout);
+  var open = fresh.blocks.filter(function(b){ return b.delt === 'start'; });
+  var close = fresh.blocks.filter(function(b){ return b.delt === 'end'; });
+  ACT.blocks.splice(1, 0, open[0]);          // straight after the warm-up
+  if(ACT.i >= 1) ACT.i++;                     // keep him where he was
+  if(close[0]) ACT.blocks.push(close[0]);
+  save(K.act, ACT);
+}
+
+function startSession(letter){
+  ACT = buildSession(letter);
+  save(K.act, ACT);
+  keepAwake();
+  show('session');
+  renderBlock();
+}
+
+function renderBlock(){
+  if(!ACT) return show('home');
+  var b = ACT.blocks[ACT.i];
+  var p = prog(), ph = phaseForWeek(p, ACT.week);
+  $('sessTitle').textContent = 'Workout ' + ACT.workout + ' · Wk ' + ACT.week;
+
+  var segs = $('segs'); segs.innerHTML='';
+  for(var i=0;i<ACT.blocks.length;i++){
+    var s = el('i'); if(i<ACT.i) s.className='done'; if(i===ACT.i) s.className='cur'; segs.appendChild(s);
+  }
+
+  var wrap = $('blockWrap'); wrap.innerHTML='';
+
+  var head = el('div','blockhead');
+  head.appendChild(el('div','kicker', (ACT.i+1) + ' of ' + ACT.blocks.length));
+  head.appendChild(el('h2', null, esc(b.t)));
+  wrap.appendChild(head);
+
+  if(b.rest) wrap.appendChild(el('div','restnote', esc(bwText(b.rest))));
+
+  for(var e=0;e<b.ex.length;e++) wrap.appendChild(renderEx(b.ex[e], e));
+
+  $('btnPrev').style.visibility = ACT.i===0 ? 'hidden' : 'visible';
+  $('btnNext').textContent = (ACT.i === ACT.blocks.length-1) ? 'Finish' : 'Next';
+}
+
+function renderEx(x, idx){
+  var box = el('div','ex');
+  if(x.c) box.appendChild(el('div','code', esc(x.c)));
+  box.appendChild(el('h3', null, esc(x.n)));
+  if(x.note) box.appendChild(el('div','note', esc(bwText(x.note))));
+
+  if(x.v || x.alt){
+    var row = el('div','vidrow');
+    if(x.v){
+      var a = el('a','vid','Demo'); a.href='https://www.youtube.com/watch?v='+x.v; a.target='_blank'; a.rel='noopener'; row.appendChild(a);
+    }
+    if(x.alt && x.alt.v){
+      var a2 = el('a','vid', esc(x.alt.n)); a2.href='https://www.youtube.com/watch?v='+x.alt.v; a2.target='_blank'; a2.rel='noopener'; row.appendChild(a2);
+    }
+    box.appendChild(row);
+  }
+
+  if(!x.sets || !x.sets.length) return box;
+
+  var kind = x.sets[0].k;
+  var pb = bestFor(x.n, kind==='wr'?'wr':kind);
+  if(pb!=null){
+    var lbl = kind==='time' ? fmtTime(pb) : (kind==='wr' ? pb + ' ' + S.unit : pb + ' reps');
+    box.appendChild(el('div','pb','Best &nbsp;<b>'+esc(lbl)+'</b>'));
+  }
+
+  var sets = el('div','sets');
+  for(var i=0;i<x.sets.length;i++) sets.appendChild(renderSet(x, i));
+  box.appendChild(sets);
+  return box;
+}
+
+function setKey(x, i){ return (x.deltId || x.c || x.n) + '#' + i; }
+
+function renderSet(x, i){
+  var st = x.sets[i];
+  var key = setKey(x, i);
+  var rec = ACT.data[key] || {};
+  var node = el('div','set' + (rec.done?' done':''));
+
+  var top = el('div','top');
+  top.appendChild(el('div','lab', esc(st.l)));
+  top.appendChild(el('div','target', esc(bwText(st.t))));
+  node.appendChild(top);
+
+  var entry = el('div','entry');
+
+  if(st.k === 'time'){
+    var btn = el('button','timebtn');
+    var secs = rec.sec != null ? rec.sec : 0;
+    btn.innerHTML = '<span>'+fmtTime(secs)+'</span><small>'+(rec.done?'Tap to redo':'Tap to start')+'</small>';
+    btn.dataset.key = key; btn.dataset.name = x.n;
+    btn.addEventListener('click', function(){ toggleStopwatch(this); });
+    entry.appendChild(btn);
+
+  } else if(st.k === 'check'){
+    var tick = el('button','donebtn', rec.done ? '&#10003; Completed' : 'Confirm completed');
+    tick.addEventListener('click', function(){
+      rec.done = !rec.done; commit(key, rec, x.n, st);
+      node.classList.toggle('done', rec.done);
+      tick.innerHTML = rec.done ? '&#10003; Completed' : 'Confirm completed';
+      tick.classList.toggle('is-done', rec.done);
+    });
+    if(rec.done) tick.classList.add('is-done');
+    entry.appendChild(tick);
+
+  } else {
+    if(st.k === 'wr'){
+      entry.appendChild(numField(S.unit, rec.weight, function(v){ rec.weight=v; commit(key, rec, x.n, st); }));
+    }
+    entry.appendChild(numField('reps', rec.reps, function(v){ rec.reps=v; commit(key, rec, x.n, st); }));
+    var tick2 = el('button','tick' + (rec.done?'':' off'), '&#10003;');
+    tick2.addEventListener('click', function(){
+      rec.done = !rec.done; commit(key, rec, x.n, st);
+      node.classList.toggle('done', rec.done);
+      tick2.innerHTML = '&#10003;';
+    });
+    entry.appendChild(tick2);
+  }
+
+  node.appendChild(entry);
+  return node;
+}
+
+function numField(label, value, onChange){
+  var f = el('div','field');
+  f.appendChild(el('label', null, esc(label)));
+  var inp = document.createElement('input');
+  inp.type='number'; inp.inputMode='decimal'; inp.step='any';
+  inp.value = (value==null ? '' : value);
+  inp.addEventListener('input', function(){
+    var v = inp.value==='' ? null : parseFloat(inp.value);
+    onChange(isNaN(v) ? null : v);
+  });
+  f.appendChild(inp);
+  return f;
+}
+
+function commit(key, rec, name, st){
+  rec.n = name; rec.k = st.k; rec.label = st.l;
+  ACT.data[key] = rec;
+  save(K.act, ACT);
+}
+
+/* ---------- stopwatch ---------- */
+var running = null;   // {key, started, btn}
+function toggleStopwatch(btn){
+  var key = btn.dataset.key;
+  if(running && running.key === key){
+    var sec = (Date.now() - running.started)/1000;
+    var rec = ACT.data[key] || {};
+    rec.sec = Math.round(sec*10)/10; rec.done = true;
+    commit(key, rec, btn.dataset.name, {k:'time', l:''});
+    btn.classList.remove('running');
+    btn.innerHTML = '<span>'+fmtTime(rec.sec)+'</span><small>Tap to redo</small>';
+    btn.closest('.set').classList.add('done');
+    running = null;
+    beep();
+    var pbv = bestFor(btn.dataset.name, 'time');
+    if(pbv!=null && rec.sec > pbv) toast('New best · ' + fmtTime(rec.sec));
+    return;
+  }
+  if(running){ running.btn.classList.remove('running'); }
+  running = { key:key, started:Date.now(), btn:btn };
+  btn.classList.add('running');
+  btn.closest('.set').classList.remove('done');
+  keepAwake();
+  tickStopwatch();
+}
+function tickStopwatch(){
+  if(!running) return;
+  var sec = (Date.now() - running.started)/1000;
+  running.btn.innerHTML = '<span>'+fmtTime(sec)+'</span><small>Tap to stop</small>';
+  setTimeout(tickStopwatch, 250);
+}
+function refreshRunningClocks(){ if(running) tickStopwatch(); }
+
+/* ---------- rest overlay ---------- */
+var restEnd=null, restTimer=null;
+function startRest(sec, nextText){
+  if(!sec){ return false; }
+  restEnd = Date.now() + sec*1000;
+  $('ovKicker').textContent = 'Rest';
+  $('ovNext').textContent = nextText || '';
+  $('overlay').classList.add('on');
+  tickRest();
+  return true;
+}
+function tickRest(){
+  clearTimeout(restTimer);
+  if(restEnd==null) return;
+  var left = (restEnd - Date.now())/1000;
+  var c = $('ovClock');
+  c.textContent = fmtTime(Math.max(0,left));
+  c.classList.toggle('zero', left<=0);
+  if(left<=0 && !c.dataset.rung){ c.dataset.rung='1'; beep(); }
+  if(left>0) delete c.dataset.rung;
+  restTimer = setTimeout(tickRest, 250);
+}
+function endRest(){
+  restEnd=null; clearTimeout(restTimer);
+  delete $('ovClock').dataset.rung;
+  $('overlay').classList.remove('on');
+}
+$('ovSkip').addEventListener('click', endRest);
+$('ovAdd').addEventListener('click', function(){ if(restEnd) { restEnd += 30000; tickRest(); } });
+
+/* ---------- navigation ---------- */
+$('btnNext').addEventListener('click', function(){
+  if(!ACT) return;
+  var b = ACT.blocks[ACT.i];
+  if(ACT.i === ACT.blocks.length-1){ finishSession(); return; }
+  ACT.i++; save(K.act, ACT);
+  renderBlock();
+  var nb = ACT.blocks[ACT.i];
+  if(b.restSec) startRest(b.restSec, 'Up next: ' + nb.t);
+});
+$('btnPrev').addEventListener('click', function(){
+  if(!ACT || ACT.i===0) return;
+  ACT.i--; save(K.act, ACT); renderBlock();
+});
+$('sessExit').addEventListener('click', function(){
+  show('home'); renderHome();
+  toast('Session kept — resume any time');
+});
+$('sessFinish').addEventListener('click', finishSession);
+
+function finishSession(){
+  if(!ACT) return;
+  var entries = [];
+  for(var k in ACT.data){
+    var r = ACT.data[k];
+    if(r && (r.done || r.sec!=null || r.reps!=null || r.weight!=null)) entries.push(r);
+  }
+  if(!entries.length){
+    if(!confirm('Nothing logged. Discard this session?')) return;
+    ACT=null; save(K.act,null); show('home'); renderHome(); return;
+  }
+
+  // delts logging
+  var d = deltsToday();
+  if(d){
+    DLT.days[d.day] = DLT.days[d.day] || {};
+    for(var k2 in ACT.data){
+      var rr = ACT.data[k2];
+      if(rr && rr.n && /ISO-Hold|Lateral Raise|Y-Hold/i.test(rr.n)){
+        DLT.days[d.day][rr.n] = rr.sec!=null ? rr.sec : rr.reps;
+      }
+    }
+    save(K.dlt, DLT);
+  }
+
+  var record = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    programme: ACT.programme,
+    name: prog().name,
+    workout: ACT.workout,
+    week: ACT.week,
+    phase: ACT.phase,
+    entries: entries
+  };
+  SES.push(record);
+  save(K.ses, SES);
+  queueUpload(record);      // local first, Sheet second
+
+  // advance the rotation
+  var order = prog().order;
+  var pos = order.indexOf(ACT.workout);
+  var nextPos = (pos+1) % order.length;
+  S.next = order[nextPos];
+  if(nextPos === 0 && S.week < prog().weeks) S.week++;
+  save(K.set, S);
+
+  ACT = null; save(K.act, null);
+  endRest();
+  show('home'); renderHome();
+  toast('Session saved');
+}
+
+/* ==================================================================
+   DELTS
+   ================================================================== */
+function deltsToday(){
+  if(!DLT.start) return null;
+  var start = new Date(DLT.start); start.setHours(0,0,0,0);
+  var now = new Date(); now.setHours(0,0,0,0);
+  var day = Math.floor((now - start)/86400000) + 1;
+  if(day < 1 || day > DELTS.days) return null;
+  var blk = DELTS.blocks.filter(function(b){ return day>=b.from && day<=b.to; })[0];
+  // lifting day = a workout is planned today; treat every day the app is opened
+  // to start a session as a lifting day. Default: lifting.
+  var isLift = true;
+  return { day:day, block:blk, isLift:isLift, work:blk.lift, rest:blk.rest };
+}
+
+function renderDelts(){
+  var w = $('deltsWrap'); w.innerHTML='';
+
+  if(!DLT.start){
+    var e = el('div','empty');
+    e.appendChild(el('h3',null,'Not started'));
+    e.appendChild(el('p',null, esc(DELTS.notes)));
+    var b = el('button','btn-ghost','Start day 1 today');
+    b.addEventListener('click', function(){
+      DLT.start = new Date().toISOString(); save(K.dlt, DLT);
+      renderDelts(); renderHome(); toast('Day 1 begins');
+    });
+    e.appendChild(b);
+    w.appendChild(e);
+    return;
+  }
+
+  var d = deltsToday();
+  var head = el('div','blockhead');
+  head.appendChild(el('div','kicker', d ? d.block.label : 'Complete'));
+  head.appendChild(el('h2', null, d ? ('Day ' + d.day + ' of 30') : 'Challenge complete'));
+  w.appendChild(head);
+  w.appendChild(el('div','restnote', esc(DELTS.notes)));
+
+  if(d){
+    d.work.forEach(function(x){
+      var box = el('div','ex');
+      if(x.pos) box.appendChild(el('div','code', esc(x.pos)));
+      box.appendChild(el('h3', null, esc(x.n)));
+      box.appendChild(el('div','note', esc(x.t)));
+      var pb = bestFor(x.n, x.k);
+      if(pb!=null) box.appendChild(el('div','pb','Best &nbsp;<b>'+(x.k==='time'?fmtTime(pb):pb+' reps')+'</b>'));
+      w.appendChild(box);
+    });
+    d.rest.forEach(function(x){
+      var box = el('div','ex');
+      box.appendChild(el('div','code','Non-lifting days'));
+      box.appendChild(el('h3', null, esc(x.n)));
+      box.appendChild(el('div','note', esc(x.t)));
+      var log = el('div','sets');
+      var btn = el('button','timebtn');
+      var done = DLT.days[d.day] && DLT.days[d.day]['Y-Hold'];
+      btn.innerHTML = '<span>'+(done?fmtTime(done):'0:00')+'</span><small>Tap to start</small>';
+      var yRunning=null;
+      btn.addEventListener('click', function(){
+        if(yRunning){
+          var sec = Math.round((Date.now()-yRunning)/100)/10;
+          DLT.days[d.day] = DLT.days[d.day] || {};
+          DLT.days[d.day]['Y-Hold'] = sec; save(K.dlt, DLT);
+          btn.classList.remove('running');
+          btn.innerHTML = '<span>'+fmtTime(sec)+'</span><small>Saved</small>';
+          yRunning=null; beep();
+        } else {
+          yRunning = Date.now(); btn.classList.add('running'); keepAwake();
+          (function tk(){ if(!yRunning) return;
+            btn.innerHTML = '<span>'+fmtTime((Date.now()-yRunning)/1000)+'</span><small>Tap to stop</small>';
+            setTimeout(tk,250);
+          })();
+        }
+      });
+      log.appendChild(btn);
+      box.appendChild(log);
+      w.appendChild(box);
+    });
+  }
+
+  // day grid
+  var grid = el('div','blockhead'); grid.appendChild(el('div','kicker','Log'));
+  w.appendChild(grid);
+  for(var i=DELTS.days;i>=1;i--){
+    var rec = DLT.days[i];
+    if(!rec) continue;
+    var it = el('div','item');
+    it.appendChild(el('div','d','Day '+i));
+    var b2 = el('div','b');
+    var parts=[]; for(var k in rec) parts.push(k+' '+(typeof rec[k]==='number' && rec[k]>3 ? fmtTime(rec[k]) : rec[k]));
+    b2.appendChild(el('div','t', esc(parts.join(' · '))));
+    it.appendChild(b2); w.appendChild(it);
+  }
+
+  var acts = el('div','rowbtns');
+  var reset = el('button','btn-ghost','Restart challenge');
+  reset.addEventListener('click', function(){
+    if(!confirm('Restart the 30 days from today? Your logged days stay in history.')) return;
+    DLT.start = new Date().toISOString(); save(K.dlt, DLT); renderDelts(); renderHome();
+  });
+  acts.appendChild(reset);
+  w.appendChild(acts);
+}
+
+/* ==================================================================
+   STANDARDS
+   ================================================================== */
+function latestStd(){ return STD.length ? STD[STD.length-1] : null; }
+
+function renderStandards(){
+  var w = $('standardsWrap'); w.innerHTML='';
+  var last = latestStd() || {results:{}};
+
+  var head = el('div','blockhead');
+  head.appendChild(el('div','kicker', last.date ? 'Last tested ' + shortDate(last.date) : 'Baseline'));
+  head.appendChild(el('h2', null, 'Six Tests'));
+  w.appendChild(head);
+  w.appendChild(el('div','restnote','Record your results before week 1, then retest at the end. These cover the qualities the big three miss: grip, balance, mobility, postural endurance and body control.'));
+
+  STANDARDS.forEach(function(t){
+    var box = el('div','test');
+    box.appendChild(el('h3', null, esc(t.n)));
+    box.appendChild(el('div','note', esc(bwText(t.how))));
+    if(t.v){
+      var row = el('div','vidrow');
+      var a = el('a','vid','Demo'); a.href='https://www.youtube.com/watch?v='+t.v; a.target='_blank'; a.rel='noopener';
+      row.appendChild(a); box.appendChild(row);
+    }
+
+    var val = last.results ? last.results[t.id] : null;
+    var tiers = el('div','tiers');
+    ['Poor Bastard','Lean Bastard','Elite'].forEach(function(name, i){
+      var d = el('div', i===2?'elite':'');
+      d.innerHTML = '<b>'+esc(name)+'</b>'+esc(t.tiers[i]);
+      tiers.appendChild(d);
+    });
+    box.appendChild(tiers);
+
+    var entry = el('div','entry'); entry.style.padding='0';
+    entry.appendChild(numField(t.pct ? S.unit : 'secs', val, function(v){
+      var rec = latestStd();
+      if(!rec || rec.locked){ rec = {date:new Date().toISOString(), results:{}}; STD.push(rec); }
+      rec.results[t.id] = v; rec.date = new Date().toISOString();
+      save(K.std, STD);
+      paintTiers(tiers, t, v);
+      grade.className = 'grade ' + gradeOf(t, v).cls;
+      grade.textContent = gradeOf(t, v).label;
+    }));
+    box.appendChild(entry);
+
+    var grade = el('div','grade ' + gradeOf(t, val).cls, gradeOf(t, val).label);
+    box.appendChild(grade);
+    paintTiers(tiers, t, val);
+    w.appendChild(box);
+  });
+
+  var acts = el('div','rowbtns');
+  var nb = el('button','btn-ghost','Start a new test date');
+  nb.addEventListener('click', function(){
+    var cur = latestStd(); if(cur) cur.locked = true;
+    STD.push({date:new Date().toISOString(), results:{}});
+    save(K.std, STD); renderStandards(); toast('New test recorded');
+  });
+  acts.appendChild(nb);
+  w.appendChild(acts);
+}
+
+function scoreOf(t, v){
+  if(v==null || isNaN(v)) return null;
+  if(t.pct){
+    if(!S.bodyweight) return null;
+    return (v / S.bodyweight) * 100;
+  }
+  return v;
+}
+function gradeOf(t, v){
+  var s = scoreOf(t, v);
+  if(s==null) return {cls:'poor', label: t.pct && v!=null && !S.bodyweight ? 'Set your bodyweight to grade this' : 'Not recorded'};
+  if(s >= t.elite) return {cls:'elite', label:'Lean Bastard Elite'};
+  if(s >= t.lean)  return {cls:'lean',  label:'Lean Bastard'};
+  return {cls:'poor', label:'Poor Bastard · keep going'};
+}
+function paintTiers(tiers, t, v){
+  var s = scoreOf(t, v);
+  var kids = tiers.children;
+  for(var i=0;i<kids.length;i++) kids[i].classList.remove('hit');
+  if(s==null) return;
+  if(s >= t.elite) kids[2].classList.add('hit');
+  else if(s >= t.lean) kids[1].classList.add('hit');
+  else kids[0].classList.add('hit');
+}
+
+/* ==================================================================
+   HISTORY
+   ================================================================== */
+function renderHistory(){
+  var w = $('historyWrap'); w.innerHTML='';
+  if(!SES.length){
+    var e = el('div','empty');
+    e.appendChild(el('h3',null,'Nothing logged yet'));
+    e.appendChild(el('p',null,'Finish a session and it lands here.'));
+    w.appendChild(e); return;
+  }
+  var head = el('div','blockhead');
+  head.appendChild(el('div','kicker', SES.length + ' session' + (SES.length>1?'s':'')));
+  head.appendChild(el('h2',null,'Log'));
+  w.appendChild(head);
+
+  for(var i=SES.length-1;i>=0;i--){
+    (function(s){
+      var it = el('div','item');
+      it.appendChild(el('div','d', shortDate(s.date)));
+      var b = el('div','b');
+      b.appendChild(el('div','t', esc('Workout ' + s.workout + ' · Week ' + s.week)));
+      var bits = s.entries.slice(0,4).map(function(e){
+        if(e.sec!=null) return e.n + ' ' + fmtTime(e.sec);
+        if(e.weight!=null && e.reps!=null) return e.n + ' ' + e.weight + '×' + e.reps;
+        if(e.reps!=null) return e.n + ' ' + e.reps;
+        return e.n;
+      });
+      b.appendChild(el('div','s', esc(bits.join(' · ') + (s.entries.length>4 ? ' …' : ''))));
+      it.appendChild(b);
+      w.appendChild(it);
+    })(SES[i]);
+  }
+
+  var acts = el('div','rowbtns');
+  var ex = el('button','btn-ghost','Export CSV');
+  ex.addEventListener('click', exportCSV);
+  acts.appendChild(ex);
+  w.appendChild(acts);
+}
+
+function exportCSV(){
+  var rows = [['date','programme','workout','week','phase','exercise','set','weight','reps','seconds']];
+  SES.forEach(function(s){
+    (s.entries||[]).forEach(function(e){
+      rows.push([s.date, s.name||s.programme, s.workout, s.week, s.phase, e.n, e.label||'', e.weight==null?'':e.weight, e.reps==null?'':e.reps, e.sec==null?'':e.sec]);
+    });
+  });
+  var csv = rows.map(function(r){
+    return r.map(function(c){ var v=String(c==null?'':c); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }).join(',');
+  }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'michael-fitness-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+
+/* ==================================================================
+   SETTINGS
+   ================================================================== */
+function renderSettings(){
+  var w = $('settingsWrap'); w.innerHTML='';
+
+  var f1 = el('div','fieldrow');
+  f1.appendChild(el('div','kicker','Bodyweight'));
+  var i1 = document.createElement('input');
+  i1.type='number'; i1.inputMode='decimal'; i1.value = S.bodyweight==null?'':S.bodyweight;
+  i1.placeholder = '0';
+  i1.addEventListener('input', function(){
+    var v = parseFloat(i1.value); S.bodyweight = isNaN(v)?null:v; save(K.set,S);
+  });
+  f1.appendChild(i1);
+  f1.appendChild(el('div','muted','Used to work out the percentage loads the programme calls for: 25% for goblet holds, 40% for the farmer\'s march and so on.'));
+  w.appendChild(f1);
+
+  var f2 = el('div','fieldrow');
+  f2.appendChild(el('div','kicker','Unit'));
+  var sel = document.createElement('select');
+  ['kg','lb'].forEach(function(u){
+    var o=document.createElement('option'); o.value=u; o.textContent=u; if(S.unit===u) o.selected=true; sel.appendChild(o);
+  });
+  sel.addEventListener('change', function(){ S.unit=sel.value; save(K.set,S); });
+  f2.appendChild(sel);
+  w.appendChild(f2);
+
+  var f3 = el('div','fieldrow');
+  f3.appendChild(el('div','kicker','Current week'));
+  var i3 = document.createElement('input');
+  i3.type='number'; i3.min='1'; i3.max=String(prog().weeks); i3.value = S.week;
+  i3.addEventListener('input', function(){
+    var v = parseInt(i3.value,10);
+    if(v>=1 && v<=prog().weeks){ S.week=v; save(K.set,S); renderHome(); }
+  });
+  f3.appendChild(i3);
+  w.appendChild(f3);
+
+  var f4 = el('div','fieldrow');
+  f4.appendChild(el('div','kicker','Next workout'));
+  var sel2 = document.createElement('select');
+  prog().order.forEach(function(L){
+    var o=document.createElement('option'); o.value=L; o.textContent='Workout '+L; if(S.next===L) o.selected=true; sel2.appendChild(o);
+  });
+  sel2.addEventListener('change', function(){ S.next=sel2.value; save(K.set,S); renderHome(); });
+  f4.appendChild(sel2);
+  w.appendChild(f4);
+
+  var f5 = el('div','fieldrow');
+  f5.appendChild(el('div','kicker','Programme'));
+  var sel3 = document.createElement('select');
+  Object.keys(PROGRAMMES).forEach(function(id){
+    var o=document.createElement('option'); o.value=id; o.textContent=PROGRAMMES[id].name; if(S.programme===id) o.selected=true; sel3.appendChild(o);
+  });
+  sel3.addEventListener('change', function(){
+    S.programme=sel3.value; S.week=1; S.next=prog().order[0]; save(K.set,S); renderHome(); renderSettings();
+  });
+  f5.appendChild(sel3);
+  w.appendChild(f5);
+
+  // ---- Google Sheet sync ----
+  var f6 = el('div','fieldrow');
+  f6.appendChild(el('div','kicker','Google Sheet backup'));
+  var i6 = document.createElement('input');
+  i6.type='url'; i6.placeholder='Paste your /exec URL';
+  i6.style.fontFamily='var(--body)'; i6.style.fontSize='14px'; i6.style.fontWeight='600';
+  i6.value = S.syncUrl || '';
+  i6.addEventListener('input', function(){
+    S.syncUrl = i6.value.trim(); save(K.set,S); updateSyncLine(); flushOutbox();
+  });
+  f6.appendChild(i6);
+
+  var i6b = document.createElement('input');
+  i6b.type='text'; i6b.placeholder='Token (only if you set one in the script)';
+  i6b.style.fontFamily='var(--body)'; i6b.style.fontSize='14px'; i6b.style.fontWeight='600';
+  i6b.style.marginTop='8px';
+  i6b.value = S.syncToken || '';
+  i6b.addEventListener('input', function(){ S.syncToken = i6b.value.trim(); save(K.set,S); });
+  f6.appendChild(i6b);
+
+  var line = el('div','muted', syncStatus()); line.id='syncLine'; line.style.marginTop='10px';
+  f6.appendChild(line);
+
+  var syncActs = el('div','rowbtns'); syncActs.style.padding='14px 0 0';
+  var rb = el('button','btn-ghost','Restore from Sheet');
+  rb.addEventListener('click', function(){ restoreFromSheet(rb); });
+  syncActs.appendChild(rb);
+  var tb = el('button','btn-ghost','Send now');
+  tb.addEventListener('click', function(){
+    if(!OUT.length){ toast('Nothing waiting'); return; }
+    flushOutbox(); toast('Sending...');
+  });
+  syncActs.appendChild(tb);
+  f6.appendChild(syncActs);
+
+  f6.appendChild(el('div','muted','Sessions upload on their own once you finish them. If there is no signal in the gym they queue here and go up next time you open the app. Restore pulls the whole history back on a new phone.'));
+  w.appendChild(f6);
+
+  var acts = el('div','rowbtns');
+  var ex = el('button','btn-ghost','Export CSV'); ex.addEventListener('click', exportCSV); acts.appendChild(ex);
+  var cl = el('button','btn-ghost','Clear all data');
+  cl.addEventListener('click', function(){
+    if(!confirm('Delete every session, standard and delt log on this phone? This cannot be undone.')) return;
+    if(!confirm('Really sure? Export first if you want a copy.')) return;
+    [K.set,K.act,K.ses,K.std,K.dlt,K.out].forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    location.reload();
+  });
+  acts.appendChild(cl);
+  w.appendChild(acts);
+
+  var info = el('div','fieldrow');
+  info.appendChild(el('div','kicker','About'));
+  info.appendChild(el('div','muted','Your log lives on this phone. Lock the screen, switch apps, come back whenever and your sets are still here. If you connect a Google Sheet above, finished sessions are copied there as a backup too.'));
+  w.appendChild(info);
+}
+
+/* ==================================================================
+   WIRING
+   ================================================================== */
+$('startBtn').addEventListener('click', function(){
+  if(ACT){ syncDelts(); show('session'); renderBlock(); keepAwake(); return; }
+  startSession(S.next);
+});
+$('toDelts').addEventListener('click', function(){ renderDelts(); show('delts'); });
+$('toStandards').addEventListener('click', function(){ renderStandards(); show('standards'); });
+$('toHistory').addEventListener('click', function(){ renderHistory(); show('history'); });
+$('toSettings').addEventListener('click', function(){ renderSettings(); show('settings'); });
+Array.prototype.forEach.call(document.querySelectorAll('[data-back]'), function(b){
+  b.addEventListener('click', function(){ show('home'); renderHome(); });
+});
+$('deltsStrip').addEventListener('click', function(){ renderDelts(); show('delts'); });
+
+renderHome();
+flushOutbox();
+
+/* service worker */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
