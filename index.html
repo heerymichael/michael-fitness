@@ -228,6 +228,16 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .pb b{ color:var(--ink); }
 
 /* ---------- Set rows ---------- */
+.round{ padding:4px 20px 0; margin-top:26px; }
+.roundhead{
+  font-family:var(--display); font-size:24px; text-transform:uppercase;
+  border-bottom:4px solid var(--ink); padding-bottom:5px; margin-bottom:14px;
+}
+.rname{
+  font-weight:800; font-size:12.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--red); margin:0 0 6px;
+}
+.round .set{ margin-bottom:16px; }
 .sets{ margin-top:16px; }
 .set{
   border:2px solid var(--ink); margin-bottom:10px;
@@ -310,6 +320,35 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
   font-weight:800; letter-spacing:.1em; text-transform:uppercase; font-size:14px;
 }
 .overlay .acts button.primary{ background:var(--red); border-color:var(--red); }
+
+/* ---------- Video library ---------- */
+#vidSearch{
+  width:100%; margin-top:10px; padding:11px 12px;
+  border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16px; font-weight:600;
+  -webkit-appearance:none; border-radius:0;
+}
+#vidSearch:focus{ outline:3px solid var(--red); outline-offset:1px; }
+.vgroup{ padding:22px 20px 2px; }
+.vgroup .kicker{ color:var(--red); }
+.vgroup h2{ margin-top:4px; }
+.vrow{
+  display:flex; align-items:center; gap:14px;
+  padding:15px 20px; border-top:2px solid var(--rule);
+  color:var(--ink); text-decoration:none;
+}
+.vrow:active{ background:var(--wash); }
+.vrow .play{
+  flex:0 0 38px; height:38px; border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+}
+.vrow .play::before{
+  content:''; width:0; height:0;
+  border-left:12px solid var(--ink); border-top:8px solid transparent; border-bottom:8px solid transparent;
+  margin-left:3px;
+}
+.vrow .vn{ flex:1; font-weight:700; font-size:16px; line-height:1.25; }
+.vrow .vw{ font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); }
 
 /* ---------- Lists / history ---------- */
 .item{ padding:16px 20px; border-top:2px solid var(--rule); display:flex; gap:14px; align-items:baseline; }
@@ -395,7 +434,8 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
       </div>
 
       <button class="btn-block" id="toDelts">Delts<span class="meta" id="deltsMeta">Start the 30-day challenge</span></button>
-      <button class="btn-block" id="toStandards">Standards<span class="meta" id="standardsMeta">6 tests</span></button>
+      <button class="btn-block" id="toVideos">Videos<span class="meta" id="videosMeta"></span></button>
+  <button class="btn-block" id="toStandards">Standards<span class="meta" id="standardsMeta">6 tests</span></button>
       <button class="btn-block" id="toHistory">History<span class="meta" id="historyMeta">No sessions yet</span></button>
       <button class="btn-block" id="toSettings">Settings<span class="meta" id="settingsMeta"></span></button>
     </div>
@@ -427,6 +467,19 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
       </div>
     </div>
     <div class="scroll" id="deltsWrap"></div>
+  </section>
+
+  <!-- ============ VIDEOS ============ -->
+  <section class="view" id="v-videos">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">Video Library</div>
+      </div>
+      <input id="vidSearch" type="search" placeholder="Search exercises"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="scroll" id="videosWrap"></div>
   </section>
 
   <!-- ============ STANDARDS ============ -->
@@ -1032,6 +1085,7 @@ function renderHome(){
     $('deltsMeta').textContent = DLT.start ? 'Challenge complete' : 'Start the 30-day challenge';
   }
 
+  $('videosMeta').textContent = videoIndex().length + ' demos';
   $('historyMeta').textContent = SES.length ? SES.length + ' session' + (SES.length>1?'s':'') + ' logged' : 'No sessions yet';
   $('standardsMeta').textContent = STD.length ? 'Last tested ' + shortDate(STD[STD.length-1].date) : '6 tests · not taken yet';
   $('settingsMeta').textContent = S.bodyweight ? S.bodyweight + ' ' + S.unit : 'Set your bodyweight';
@@ -1122,13 +1176,36 @@ function renderBlock(){
 
   if(b.rest) wrap.appendChild(el('div','restnote', esc(bwText(b.rest))));
 
-  for(var e=0;e<b.ex.length;e++) wrap.appendChild(renderEx(b.ex[e], e));
+  // A superset is alternated, so show it round by round rather than all of
+  // one exercise then all of the next. Straight-set blocks stay as they were.
+  var paired = /^Superset/i.test(b.t) && b.ex.length >= 2 &&
+               b.ex.every(function(x){ return x.sets && x.sets.length; });
+
+  if(paired){
+    for(var e=0;e<b.ex.length;e++) wrap.appendChild(renderEx(b.ex[e], e, true));
+
+    var rounds = 0;
+    b.ex.forEach(function(x){ rounds = Math.max(rounds, x.sets.length); });
+
+    for(var r=0;r<rounds;r++){
+      var rd = el('div','round');
+      rd.appendChild(el('div','roundhead', 'Round ' + (r+1)));
+      b.ex.forEach(function(x){
+        if(!x.sets[r]) return;
+        rd.appendChild(el('div','rname', esc((x.c ? x.c + ' ' : '') + x.n)));
+        rd.appendChild(renderSet(x, r, true));
+      });
+      wrap.appendChild(rd);
+    }
+  } else {
+    for(var e2=0;e2<b.ex.length;e2++) wrap.appendChild(renderEx(b.ex[e2], e2));
+  }
 
   $('btnPrev').style.visibility = ACT.i===0 ? 'hidden' : 'visible';
   $('btnNext').textContent = (ACT.i === ACT.blocks.length-1) ? 'Finish' : 'Next';
 }
 
-function renderEx(x, idx){
+function renderEx(x, idx, noSets){
   var box = el('div','ex');
   if(x.c) box.appendChild(el('div','code', esc(x.c)));
   box.appendChild(el('h3', null, esc(x.n)));
@@ -1154,6 +1231,8 @@ function renderEx(x, idx){
     box.appendChild(el('div','pb','Best &nbsp;<b>'+esc(lbl)+'</b>'));
   }
 
+  if(noSets) return box;          // the set rows are shown per round instead
+
   var sets = el('div','sets');
   for(var i=0;i<x.sets.length;i++) sets.appendChild(renderSet(x, i));
   box.appendChild(sets);
@@ -1162,14 +1241,14 @@ function renderEx(x, idx){
 
 function setKey(x, i){ return (x.deltId || x.c || x.n) + '#' + i; }
 
-function renderSet(x, i){
+function renderSet(x, i, inRound){
   var st = x.sets[i];
   var key = setKey(x, i);
   var rec = ACT.data[key] || {};
   var node = el('div','set' + (rec.done?' done':''));
 
   var top = el('div','top');
-  top.appendChild(el('div','lab', esc(st.l)));
+  top.appendChild(el('div','lab', inRound ? '' : esc(st.l)));
   top.appendChild(el('div','target', esc(bwText(st.t))));
   node.appendChild(top);
 
@@ -1563,6 +1642,88 @@ function paintTiers(tiers, t, v){
 }
 
 /* ==================================================================
+   VIDEO LIBRARY
+   Every demo in the programme, in one place, outside a session.
+   ================================================================== */
+function videoIndex(){
+  var out = [], seen = {};
+
+  function add(name, vid, where){
+    if(!vid || seen[vid]) return;
+    seen[vid] = true;
+    out.push({ n:name, v:vid, w:where });
+  }
+  function walk(list, where){
+    (list||[]).forEach(function(x){
+      add(x.n, x.v, where);
+      if(x.alt) add(x.alt.n, x.alt.v, where);
+    });
+  }
+
+  var p = prog();
+  p.phases.forEach(function(ph){
+    walk(ph.warmup, ph.label + ' warm-up');
+    p.order.forEach(function(L){
+      (ph.workouts[L]||[]).forEach(function(b){
+        walk(b.ex, ph.label + ' · Workout ' + L);
+      });
+    });
+  });
+  STANDARDS.forEach(function(t){ add(t.n, t.v, 'Standards'); });
+
+  return out;
+}
+
+function renderVideos(filter){
+  var w = $('videosWrap'); w.innerHTML='';
+  var all = videoIndex();
+  var q = (filter||'').trim().toLowerCase();
+
+  var list = q ? all.filter(function(x){ return x.n.toLowerCase().indexOf(q) > -1; }) : all;
+
+  if(!list.length){
+    var e = el('div','empty');
+    e.appendChild(el('h3',null,'Nothing matches'));
+    e.appendChild(el('p',null,'Try a shorter word.'));
+    w.appendChild(e); return;
+  }
+
+  if(q){
+    // A search wants one flat list of hits, not the grouping.
+    var head = el('div','vgroup');
+    head.appendChild(el('div','kicker', list.length + ' result' + (list.length>1?'s':'')));
+    head.appendChild(el('h2', null, 'Search'));
+    w.appendChild(head);
+    list.forEach(function(x){ w.appendChild(vrow(x, true)); });
+    return;
+  }
+
+  var groups = [], byName = {};
+  list.forEach(function(x){
+    if(!byName[x.w]){ byName[x.w] = []; groups.push(x.w); }
+    byName[x.w].push(x);
+  });
+  groups.forEach(function(g){
+    var head = el('div','vgroup');
+    head.appendChild(el('div','kicker', byName[g].length + ' videos'));
+    head.appendChild(el('h2', null, esc(g)));
+    w.appendChild(head);
+    byName[g].forEach(function(x){ w.appendChild(vrow(x, false)); });
+  });
+}
+
+function vrow(x, showWhere){
+  var a = el('a','vrow');
+  a.href = 'https://www.youtube.com/watch?v=' + x.v;
+  a.target = '_blank'; a.rel = 'noopener';
+  a.appendChild(el('div','play'));
+  var mid = el('div','vn', esc(x.n));
+  a.appendChild(mid);
+  if(showWhere) a.appendChild(el('div','vw', esc(x.w)));
+  return a;
+}
+
+/* ==================================================================
    HISTORY
    ================================================================== */
 function renderHistory(){
@@ -1746,6 +1907,10 @@ $('startBtn').addEventListener('click', function(){
   startSession(S.next);
 });
 $('toDelts').addEventListener('click', function(){ renderDelts(); show('delts'); });
+$('toVideos').addEventListener('click', function(){
+  $('vidSearch').value=''; renderVideos(''); show('videos');
+});
+$('vidSearch').addEventListener('input', function(){ renderVideos(this.value); });
 $('toStandards').addEventListener('click', function(){ renderStandards(); show('standards'); });
 $('toHistory').addEventListener('click', function(){ renderHistory(); show('history'); });
 $('toSettings').addEventListener('click', function(){ renderSettings(); show('settings'); });
