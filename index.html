@@ -321,6 +321,22 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 }
 .overlay .acts button.primary{ background:var(--red); border-color:var(--red); }
 
+/* ---------- Workout picker ---------- */
+.chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.chip{
+  border:2px solid var(--ink); padding:12px 0; min-width:60px; flex:1 1 60px;
+  font-family:var(--display); font-size:22px; text-transform:uppercase;
+  background:var(--paper); color:var(--ink); text-align:center;
+}
+.chip.on{ background:var(--ink); color:#fff; }
+.chip.on.red{ background:var(--red); border-color:var(--red); }
+.picksum{
+  margin-top:26px; padding:18px 20px; background:var(--wash);
+  border-left:6px solid var(--red);
+}
+.picksum .kicker{ color:var(--grey); }
+.picksum .big{ font-family:var(--display); font-size:30px; text-transform:uppercase; margin-top:4px; line-height:1; }
+
 /* ---------- Video library ---------- */
 #vidSearch{
   width:100%; margin-top:10px; padding:11px 12px;
@@ -434,7 +450,8 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
       </div>
 
       <button class="btn-block" id="toDelts">Delts<span class="meta" id="deltsMeta">Start the 30-day challenge</span></button>
-      <button class="btn-block" id="toVideos">Videos<span class="meta" id="videosMeta"></span></button>
+      <button class="btn-block" id="toPick">Pick a workout<span class="meta">Repeat a week or jump phase</span></button>
+  <button class="btn-block" id="toVideos">Videos<span class="meta" id="videosMeta"></span></button>
   <button class="btn-block" id="toStandards">Standards<span class="meta" id="standardsMeta">6 tests</span></button>
       <button class="btn-block" id="toHistory">History<span class="meta" id="historyMeta">No sessions yet</span></button>
       <button class="btn-block" id="toSettings">Settings<span class="meta" id="settingsMeta"></span></button>
@@ -467,6 +484,17 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
       </div>
     </div>
     <div class="scroll" id="deltsWrap"></div>
+  </section>
+
+  <!-- ============ PICK A WORKOUT ============ -->
+  <section class="view" id="v-pick">
+    <div class="sesshead">
+      <div class="row">
+        <button class="xbtn" data-back aria-label="Back">&times;</button>
+        <div class="title">Pick a workout</div>
+      </div>
+    </div>
+    <div class="scroll" id="pickWrap"></div>
   </section>
 
   <!-- ============ VIDEOS ============ -->
@@ -1099,8 +1127,9 @@ function shortDate(iso){
 /* ==================================================================
    SESSION
    ================================================================== */
-function buildSession(letter){
-  var p = prog(), ph = phaseForWeek(p, S.week);
+function buildSession(letter, week, adhoc){
+  week = week || S.week;
+  var p = prog(), ph = phaseForWeek(p, week);
   var blocks = [];
 
   // warm-up as one screen: every item is a single tap to confirm
@@ -1129,7 +1158,8 @@ function buildSession(letter){
   }
 
   return {
-    programme:S.programme, workout:letter, week:S.week, phase:ph.n,
+    programme:S.programme, workout:letter, week:week, phase:ph.n,
+    adhoc: !!adhoc,          // a one-off does not move the programme on
     startedAt:new Date().toISOString(), i:0, blocks:blocks, data:{}
   };
 }
@@ -1139,7 +1169,7 @@ function syncDelts(){
   var has = ACT.blocks.some(function(b){ return b.delt; });
   var d = deltsToday();
   if(!d || !d.isLift || !d.work.length || has) return;
-  var fresh = buildSession(ACT.workout);
+  var fresh = buildSession(ACT.workout, ACT.week, ACT.adhoc);
   var open = fresh.blocks.filter(function(b){ return b.delt === 'start'; });
   var close = fresh.blocks.filter(function(b){ return b.delt === 'end'; });
   ACT.blocks.splice(1, 0, open[0]);          // straight after the warm-up
@@ -1148,8 +1178,8 @@ function syncDelts(){
   save(K.act, ACT);
 }
 
-function startSession(letter){
-  ACT = buildSession(letter);
+function startSession(letter, week, adhoc){
+  ACT = buildSession(letter, week, adhoc);
   save(K.act, ACT);
   keepAwake();
   show('session');
@@ -1433,18 +1463,22 @@ function finishSession(){
   save(K.ses, SES);
   queueUpload(record);      // local first, Sheet second
 
-  // advance the rotation
-  var order = prog().order;
-  var pos = order.indexOf(ACT.workout);
-  var nextPos = (pos+1) % order.length;
-  S.next = order[nextPos];
-  if(nextPos === 0 && S.week < prog().weeks) S.week++;
-  save(K.set, S);
+  // Advance the rotation only for a scheduled session. A workout picked by
+  // hand is a one-off: it is logged as normal but leaves your place alone.
+  if(!ACT.adhoc){
+    var order = prog().order;
+    var pos = order.indexOf(ACT.workout);
+    var nextPos = (pos+1) % order.length;
+    S.next = order[nextPos];
+    if(nextPos === 0 && S.week < prog().weeks) S.week++;
+    save(K.set, S);
+  }
+  var wasAdhoc = ACT.adhoc;
 
   ACT = null; save(K.act, null);
   endRest();
   show('home'); renderHome();
-  toast('Session saved');
+  toast(wasAdhoc ? 'Saved — your place is unchanged' : 'Session saved');
 }
 
 /* ==================================================================
@@ -1639,6 +1673,98 @@ function paintTiers(tiers, t, v){
   if(s >= t.elite) kids[2].classList.add('hit');
   else if(s >= t.lean) kids[1].classList.add('hit');
   else kids[0].classList.add('hit');
+}
+
+/* ==================================================================
+   WORKOUT PICKER
+   Run any week of any phase without moving your place in the
+   programme. For repeating a week, or picking up after a break.
+   ================================================================== */
+var PICK = null;
+
+function renderPick(){
+  var p = prog();
+  if(!PICK) PICK = { week:S.week, letter:S.next };
+  var ph = phaseForWeek(p, PICK.week);
+
+  var w = $('pickWrap'); w.innerHTML='';
+
+  var head = el('div','blockhead');
+  head.appendChild(el('div','kicker','Anything, any time'));
+  head.appendChild(el('h2', null, 'Choose'));
+  w.appendChild(head);
+  w.appendChild(el('div','restnote','Running a workout from here logs it as normal but leaves your place in the programme where it is. Use it to repeat a week, or to drop back a phase.'));
+
+  // phase
+  var f1 = el('div','fieldrow');
+  f1.appendChild(el('div','kicker','Phase'));
+  var c1 = el('div','chips');
+  p.phases.forEach(function(x){
+    var b = el('button','chip' + (x.n===ph.n?' on':''), String(x.n));
+    b.addEventListener('click', function(){ PICK.week = x.from; renderPick(); });
+    c1.appendChild(b);
+  });
+  f1.appendChild(c1);
+  f1.appendChild(el('div','muted','Weeks ' + ph.from + ' to ' + ph.to));
+  w.appendChild(f1);
+
+  // week
+  var f2 = el('div','fieldrow');
+  f2.appendChild(el('div','kicker','Week'));
+  var c2 = el('div','chips');
+  for(var wk=ph.from; wk<=ph.to; wk++){
+    (function(n){
+      var b = el('button','chip' + (n===PICK.week?' on':''), String(n));
+      b.addEventListener('click', function(){ PICK.week = n; renderPick(); });
+      c2.appendChild(b);
+    })(wk);
+  }
+  f2.appendChild(c2);
+  w.appendChild(f2);
+
+  // workout
+  var f3 = el('div','fieldrow');
+  f3.appendChild(el('div','kicker','Workout'));
+  var c3 = el('div','chips');
+  p.order.forEach(function(L){
+    var b = el('button','chip' + (L===PICK.letter?' on red':''), L);
+    b.addEventListener('click', function(){ PICK.letter = L; renderPick(); });
+    c3.appendChild(b);
+  });
+  f3.appendChild(c3);
+  w.appendChild(f3);
+
+  // what you picked, and how often you have done it
+  var done = SES.filter(function(s){
+    return s.week === PICK.week && s.workout === PICK.letter;
+  }).length;
+
+  var sum = el('div','picksum');
+  sum.appendChild(el('div','kicker', ph.label));
+  sum.appendChild(el('div','big', 'Week ' + PICK.week + ' · Workout ' + PICK.letter));
+  sum.appendChild(el('div','muted', done
+    ? ('You have logged this ' + done + ' time' + (done>1?'s':'') + ' before')
+    : 'Not logged yet'));
+  w.appendChild(sum);
+
+  var go = el('button','btn-huge');
+  go.innerHTML = '<span class="sub">One-off, keeps your place</span><span>Start Workout ' + PICK.letter + '</span>';
+  go.style.marginTop = '22px';
+  go.addEventListener('click', function(){
+    if(ACT && !confirm('You have a session in progress. Start this one instead and lose it?')) return;
+    startSession(PICK.letter, PICK.week, true);
+  });
+  w.appendChild(go);
+
+  var acts = el('div','rowbtns');
+  var mv = el('button','btn-ghost','Set as my current position');
+  mv.addEventListener('click', function(){
+    S.week = PICK.week; S.next = PICK.letter; save(K.set, S);
+    renderHome(); show('home');
+    toast('Moved to week ' + PICK.week + ', workout ' + PICK.letter);
+  });
+  acts.appendChild(mv);
+  w.appendChild(acts);
 }
 
 /* ==================================================================
@@ -1907,6 +2033,9 @@ $('startBtn').addEventListener('click', function(){
   startSession(S.next);
 });
 $('toDelts').addEventListener('click', function(){ renderDelts(); show('delts'); });
+$('toPick').addEventListener('click', function(){
+  PICK = { week:S.week, letter:S.next }; renderPick(); show('pick');
+});
 $('toVideos').addEventListener('click', function(){
   $('vidSearch').value=''; renderVideos(''); show('videos');
 });
