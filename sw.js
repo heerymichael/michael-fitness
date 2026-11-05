@@ -1,7 +1,7 @@
 /* Michael Fitness service worker
    BUMP THIS VERSION every time you change index.html, or iOS will keep
    serving you the old one from its home-screen cache. */
-const CACHE = 'mf-v5';
+const CACHE = 'mf-v9';
 
 const SHELL = [
   './',

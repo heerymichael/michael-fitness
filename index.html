@@ -15,7 +15,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    MICHAEL FITNESS — design tokens
@@ -35,9 +35,62 @@
 
   --display: 'Anton', 'Arial Narrow', 'Helvetica Neue Condensed', Impact, sans-serif;
   --body: 'Barlow', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius: 0px;
+  --border: 2px;
+  --tracking: .01em;
 
   --bar-h: 78px;
 }
+
+/* Standardized Strength runs on the same machinery but reads differently:
+   warm paper, slate ink, teal accent, rounded geometric type, soft corners. */
+body[data-theme="ss"]{
+  --paper:#F8F5EF;
+  --ink:#1E2124;
+  --red:#1F6F78;          /* the accent slot, teal here rather than red */
+  --grey:#6E6A63;
+  --rule:#DFD9CE;
+  --wash:#EFEAE0;
+
+  --display:'Nunito', 'Avenir Next', 'Segoe UI', sans-serif;
+  --body:'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius:10px;
+  --border:2px;
+  --tracking:-.01em;
+}
+body[data-theme="ss"] h1,
+body[data-theme="ss"] h2,
+body[data-theme="ss"] h3,
+body[data-theme="ss"] h4{
+  font-weight:900; letter-spacing:-.015em; line-height:1.02; text-transform:none;
+}
+body[data-theme="ss"] .hero .wordmark{ text-transform:none; font-weight:900; }
+body[data-theme="ss"] .btn-huge,
+body[data-theme="ss"] .btn-block,
+body[data-theme="ss"] .roundhead,
+body[data-theme="ss"] .chip,
+body[data-theme="ss"] .timebtn,
+body[data-theme="ss"] .donebtn,
+body[data-theme="ss"] .sesshead .title,
+body[data-theme="ss"] .upnext .phase,
+body[data-theme="ss"] .picksum .big,
+body[data-theme="ss"] .item .d,
+body[data-theme="ss"] .overlay .clock,
+body[data-theme="ss"] .strip .num,
+body[data-theme="ss"] .ex .code,
+body[data-theme="ss"] .set .lab,
+body[data-theme="ss"] .field input,
+body[data-theme="ss"] .fieldrow input,
+body[data-theme="ss"] .fieldrow select,
+body[data-theme="ss"] .grade,
+body[data-theme="ss"] .test .tiers div b,
+body[data-theme="ss"] .pb{ font-weight:900; letter-spacing:-.01em; text-transform:none; }
+body[data-theme="ss"] .btn-huge,
+body[data-theme="ss"] .roundhead,
+body[data-theme="ss"] .bar button{ text-transform:none; }
+body[data-theme="ss"] .hero .wordmark{ letter-spacing:-.03em; }
+body[data-theme="ss"] .ex .code{ border-radius:var(--radius); padding:4px 10px 3px; }
+body[data-theme="ss"] .roundhead{ border-bottom-width:3px; }
 
 *,*::before,*::after{ box-sizing:border-box; }
 [hidden]{ display:none !important; }
@@ -75,7 +128,7 @@ body{
   -webkit-overflow-scrolling:touch;
   padding-bottom: calc(var(--safe-b) + 32px);
 }
-#v-session .scroll{ padding-bottom: calc(var(--bar-h) + var(--safe-b) + 24px); }
+#v-session .scroll{ padding-bottom: calc(var(--barwrap-h, 124px) + 24px); }
 
 /* ---------- Typography ---------- */
 h1,h2,h3,h4{ margin:0; font-family:var(--display); font-weight:400; letter-spacing:.01em; line-height:.95; text-transform:uppercase; }
@@ -113,6 +166,52 @@ p{ margin:0 0 12px; }
   letter-spacing:.18em; text-transform:uppercase; color:#9A9A9A;
 }
 
+/* ---------- Programme chooser ---------- */
+.allprog{
+  display:inline-block; margin-bottom:16px; padding:7px 12px;
+  border:2px solid #4A4A4A; color:#C9C9C9;
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  border-radius:var(--radius);
+}
+.allprog:active{ background:#fff; color:#000; border-color:#fff; }
+
+.resume{
+  display:block; width:100%; text-align:left;
+  padding:18px 20px; background:var(--red); color:#fff;
+  font-weight:800; font-size:15px; letter-spacing:.06em; text-transform:uppercase;
+}
+.resume span{ display:block; font-weight:600; font-size:13px; letter-spacing:.04em; opacity:.85; text-transform:none; margin-top:3px; }
+
+.pcard{
+  display:block; width:100%; text-align:left;
+  padding:26px 20px 24px; border-bottom:3px solid rgba(0,0,0,.12);
+}
+.pcard .pname{ font-size:clamp(30px,8.5vw,40px); line-height:.95; }
+.pcard .pby{ margin-top:8px; font-size:13px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; opacity:.62; }
+.pcard .ppos{ margin-top:18px; font-size:15px; font-weight:700; }
+.pcard .pmeta{ margin-top:4px; font-size:13.5px; opacity:.7; }
+.pcard .pbar{ display:flex; gap:3px; margin-top:16px; }
+.pcard .pbar i{ flex:1; height:7px; background:rgba(0,0,0,.14); }
+.pcard .pbar i.on{ background:currentColor; }
+.pcard .pgo{
+  display:inline-block; margin-top:20px; padding:11px 18px;
+  font-size:13px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+}
+
+/* Lean Bastard: paper white, hard corners, condensed display */
+.pcard.lb{ background:#FFFFFF; color:#000000; font-family:'Barlow',sans-serif; }
+.pcard.lb .pname{ font-family:'Anton','Arial Narrow',sans-serif; text-transform:uppercase; letter-spacing:.01em; }
+.pcard.lb .pgo{ background:#F60024; color:#fff; }
+.pcard.lb .pbar i.on{ background:#F60024; }
+
+/* Standardized Strength: warm paper, slate ink, teal, rounded */
+.pcard.ss{ background:#F8F5EF; color:#1E2124; font-family:'Nunito',sans-serif; }
+.pcard.ss .pname{ font-family:'Nunito',sans-serif; font-weight:900; letter-spacing:-.025em; }
+.pcard.ss .pby{ letter-spacing:.1em; }
+.pcard.ss .pgo{ background:#1F6F78; color:#fff; border-radius:10px; }
+.pcard.ss .pbar i{ border-radius:4px; }
+.pcard.ss .pbar i.on{ background:#1F6F78; }
+
 /* ---------- Buttons ---------- */
 button{ font-family:var(--body); font-size:17px; border:0; background:none; color:inherit; cursor:pointer; }
 
@@ -147,6 +246,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 
 .btn-ghost{
   border:2px solid var(--ink); padding:12px 16px; font-weight:700;
+  border-radius:var(--radius); 
   font-size:15px; text-transform:uppercase; letter-spacing:.08em;
 }
 .btn-ghost:active{ background:var(--ink); color:#fff; }
@@ -212,7 +312,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .vidrow{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
 .vid{
   display:inline-flex; align-items:center; gap:8px;
-  border:2px solid var(--ink); padding:9px 14px;
+  border:2px solid var(--ink); padding:9px 14px; border-radius:var(--radius);
   font-weight:800; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
   color:var(--ink); text-decoration:none;
 }
@@ -241,6 +341,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .sets{ margin-top:16px; }
 .set{
   border:2px solid var(--ink); margin-bottom:10px;
+  border-radius:var(--radius); 
 }
 .set.done{ background:var(--ink); color:#fff; }
 .set.done .target{ color:#B9B9B9; }
@@ -250,7 +351,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .set .target{ flex:1; font-size:14.5px; line-height:1.3; font-weight:500; color:#333; }
 .set .entry{ display:flex; gap:8px; padding:0 14px 13px; align-items:stretch; flex-wrap:nowrap; }
 
-.field{ display:flex; align-items:center; border:2px solid currentColor; flex:1 1 0; min-width:0; }
+.field{ display:flex; align-items:center; border:2px solid currentColor; flex:1 1 0; min-width:0; border-radius:var(--radius); }
 .field label{
   font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
   padding:0 6px; opacity:.6; flex:0 0 auto; line-height:1.05; max-width:42px;
@@ -264,12 +365,13 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .field input:focus{ outline:3px solid var(--red); outline-offset:2px; }
 
 .donebtn{
-  width:100%; border:2px solid currentColor; padding:13px;
+  width:100%; border:2px solid currentColor; padding:13px; border-radius:var(--radius);
   font-family:var(--display); font-size:22px; text-transform:uppercase; letter-spacing:.04em;
 }
 .donebtn.is-done{ background:var(--red); border-color:var(--red); color:#fff; }
 .tick{
   flex:0 0 56px; width:56px; min-height:48px;
+  border-radius:var(--radius); 
   border:2px solid currentColor; font-size:24px; font-weight:800; line-height:1;
   display:flex; align-items:center; justify-content:center;
 }
@@ -278,18 +380,38 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .set.done .tick.off{ background:transparent; border-color:#555; color:#555; }
 
 .timebtn{
-  width:100%; border:2px solid currentColor; padding:14px;
+  width:100%; border:2px solid currentColor; padding:14px; border-radius:var(--radius);
   font-family:var(--display); font-size:34px; text-transform:uppercase; letter-spacing:.04em;
   display:flex; align-items:center; justify-content:space-between;
 }
 .timebtn.running{ background:var(--red); border-color:var(--red); color:#fff; }
 .timebtn small{ font-family:var(--body); font-size:12px; font-weight:800; letter-spacing:.14em; }
 
+/* ---------- Manual rest strip ---------- */
+.barwrap{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:var(--ink); padding-bottom:var(--safe-b);
+}
+.restbar{
+  display:flex; align-items:stretch;
+  background:var(--paper); border-top:2px solid var(--rule);
+}
+.restbar .rlab{
+  display:flex; align-items:center; padding:0 14px;
+  font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--grey);
+}
+.restbar button{
+  flex:1; padding:12px 4px; color:var(--ink);
+  font-family:var(--display); font-size:19px; letter-spacing:.02em;
+  border-left:2px solid var(--rule);
+}
+.restbar button:active{ background:var(--red); color:#fff; border-color:var(--red); }
+body[data-theme="ss"] .restbar button{ font-weight:900; }
+
 /* ---------- Bottom bar ---------- */
 .bar{
-  position:fixed; left:0; right:0; bottom:0; z-index:40;
   background:var(--ink); color:#fff;
-  padding-bottom:var(--safe-b);
   display:flex; align-items:stretch;
 }
 .bar button{
@@ -325,6 +447,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .chip{
   border:2px solid var(--ink); padding:12px 0; min-width:60px; flex:1 1 60px;
+  border-radius:var(--radius); 
   font-family:var(--display); font-size:22px; text-transform:uppercase;
   background:var(--paper); color:var(--ink); text-align:center;
 }
@@ -342,7 +465,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
   width:100%; margin-top:10px; padding:11px 12px;
   border:2px solid var(--ink); background:var(--paper); color:var(--ink);
   font-family:var(--body); font-size:16px; font-weight:600;
-  -webkit-appearance:none; border-radius:0;
+  -webkit-appearance:none; border-radius:var(--radius);
 }
 #vidSearch:focus{ outline:3px solid var(--red); outline-offset:1px; }
 .vgroup{ padding:22px 20px 2px; }
@@ -378,7 +501,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .test h3{ font-size:22px; }
 .test .tiers{ display:flex; gap:6px; margin:12px 0 10px; }
 .test .tiers div{
-  flex:1; padding:7px 4px; text-align:center; border:2px solid var(--rule);
+  flex:1; padding:7px 4px; text-align:center; border:2px solid var(--rule); border-radius:var(--radius);
   font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; line-height:1.25;
 }
 .test .tiers div b{ display:block; font-family:var(--display); font-size:14px; letter-spacing:.04em; }
@@ -394,7 +517,7 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 .fieldrow{ padding:18px 20px; border-top:2px solid var(--rule); }
 .fieldrow .kicker{ display:block; margin-bottom:8px; }
 .fieldrow input, .fieldrow select{
-  width:100%; border:2px solid var(--ink); padding:12px;
+  width:100%; border:2px solid var(--ink); padding:12px; border-radius:var(--radius);
   font-family:var(--display); font-size:26px; background:var(--paper); color:var(--ink);
   -moz-appearance:textfield;
 }
@@ -424,16 +547,29 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
 <body>
 <div id="app">
 
-  <!-- ============ HOME ============ -->
-  <section class="view on" id="v-home">
+  <!-- ============ CHOOSE A PROGRAMME ============ -->
+  <section class="view on" id="v-choose">
     <div class="scroll">
       <div class="hero">
         <div class="wordmark">Michael<br><em>Fitness</em></div>
-        <div class="tag" id="homeTag">Lean Bastard</div>
+        <div class="tag">Choose a programme</div>
+      </div>
+      <button class="resume" id="resumeBtn" hidden></button>
+      <div id="chooseWrap"></div>
+    </div>
+  </section>
+
+  <!-- ============ HOME ============ -->
+  <section class="view" id="v-home">
+    <div class="scroll">
+      <div class="hero">
+        <button class="allprog" id="toChoose">&#8592; All programmes</button>
+        <div class="wordmark" id="homeName">Lean Bastard</div>
+        <div class="tag" id="homeTag">Joe DeFranco</div>
       </div>
 
       <div class="upnext">
-        <div class="kicker">Up next</div>
+        <div class="kicker" id="upNextKicker">Up next</div>
         <div class="phase" id="nowPhase">Phase 1 · Week 1</div>
         <div class="phase prog" id="nowWorkout">Workout A</div>
         <div class="weekbar" id="weekbar"></div>
@@ -469,9 +605,17 @@ button{ font-family:var(--body); font-size:17px; border:0; background:none; colo
       <div class="segs" id="segs"></div>
     </div>
     <div class="scroll" id="blockWrap"></div>
-    <div class="bar">
-      <button class="prev" id="btnPrev">Back</button>
-      <button class="go" id="btnNext">Next</button>
+    <div class="barwrap" id="barwrap">
+      <div class="restbar">
+        <span class="rlab">Rest</span>
+        <button data-rest="30">30s</button>
+        <button data-rest="60">60s</button>
+        <button data-rest="120">2m</button>
+      </div>
+      <div class="bar">
+        <button class="prev" id="btnPrev">Back</button>
+        <button class="go" id="btnNext">Next</button>
+      </div>
     </div>
   </section>
 
@@ -580,7 +724,7 @@ function save(key, val){
   catch(e){ toast('Could not save — storage full?'); return false; }
 }
 
-var S   = load(K.set, { programme:'lean_bastard', week:1, next:'A', bodyweight:null, unit:'kg', syncUrl:'', syncToken:'' });
+var S   = load(K.set, { programme:'lean_bastard', week:1, next:'A', bodyweight:null, unit:'kg', syncUrl:'', syncToken:'', autoRest:true });
 var ACT = load(K.act, null);
 var SES = load(K.ses, []);
 var STD = load(K.std, []);
@@ -629,6 +773,8 @@ lean_bastard: {
   id:'lean_bastard',
   name:'Lean Bastard',
   by:'Joe DeFranco',
+  wname:'Workout',
+  theme:'lb',
   weeks:9,
   order:['A','B','C'],
   phases:[
@@ -879,6 +1025,359 @@ lean_bastard: {
     }}
   ]
 }
+,
+
+/* ------------------------------------------------------------------
+   Pat Flynn's Standardized Strength, beginner track.
+   8 weeks, four phases of two weeks, four numbered days per phase.
+   Flynn does not prescribe rest periods, so the rest lines below are
+   sensible defaults rather than his instruction. Edit freely.
+   ------------------------------------------------------------------ */
+standardized_strength: {
+  id:'standardized_strength',
+  name:'Standardized Strength',
+  by:'Pat Flynn',
+  wname:'Day',
+  theme:'ss',
+  restMode:'manual',   // Flynn prescribes no rest, so nothing fires on its own
+  weeks:8,
+  order:['1','2','3','4'],
+  channel:'https://www.youtube.com/@supmuhhumbruh',
+  phases:[
+
+    /* ===================== WEEKS 1 & 2 ===================== */
+    { n:1, label:'Weeks 1 & 2', from:1, to:2, warmup:[], workouts:{
+
+      '1':[
+        {t:'Exercise A1 · Mobility', rest:'30 sec between sets', restSec:30, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',
+           note:'Arms and legs locked, moving from the shoulders and hips with your butt raised high.',
+           sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',
+           note:'On your back, legs and shoulders off the ground, lower back pressed into the floor.',
+           sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',
+           note:'Body facing the wall for support. Focus on alignment and stability.',
+           sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Exercise A1 · Strength', rest:'2 min between sets', restSec:120, ex:[
+          {c:'A1',n:'Double Clean and Press',
+           sets:[{l:'Set 1',t:'8 reps @ 10-12rm',k:'wr'},{l:'Set 2',t:'8 reps @ 10-12rm',k:'wr'},{l:'Set 3',t:'8 reps @ 10-12rm',k:'wr'}]}
+        ]},
+        {t:'Superset B · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'B1',n:'Front Squat',
+           sets:[{l:'Set 1',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 2',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 3',t:'10 reps @ 12-15rm',k:'wr'}]},
+          {c:'B2',n:'Chin-Ups',
+           note:'Palms facing you. If you cannot manage 5, do as many as possible. If none, swap in 3 sets of 10-15 second flexed-arm hangs with a slow lowering.',
+           sets:[{l:'Set 1',t:'5 reps @ bodyweight',k:'reps'},{l:'Set 2',t:'5 reps @ bodyweight',k:'reps'},{l:'Set 3',t:'Max reps @ bodyweight',k:'reps'}]}
+        ]},
+        {t:'Superset C · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'C1',n:"Farmer Carry",
+           note:'Heaviest weight you can hold for the full 30 seconds.',
+           sets:[{l:'Set 1',t:'30 sec',k:'wr'},{l:'Set 2',t:'30 sec',k:'wr'},{l:'Set 3',t:'30 sec',k:'wr'}]},
+          {c:'C2',n:'Tempo Push-Up',
+           note:'2 seconds down, 1 second up. If fatigued, hold a plank or do the lowering phase only.',
+           sets:[{l:'Set 1',t:'20 sec',k:'reps'},{l:'Set 2',t:'20 sec',k:'reps'},{l:'Set 3',t:'20 sec',k:'reps'}]}
+        ]},
+        {t:'Conditioning', rest:'Finish', restSec:0, ex:[
+          {c:'',n:'Kettlebell Swing',
+           note:'100 reps as quickly as possible. 20-24kg.',
+           sets:[{l:'Time',t:'100 reps for time',k:'time'},{l:'Bell',t:'Weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '2':[
+        {t:'Developer Circuit', rest:'5 rounds, no rest between rounds', restSec:0, ex:[
+          {c:'',n:'Pull-Up Ladder',note:'1 rep in round one, up by one each round to 5. If you can do 5 confidently, add weight and work at your 5-rep max. Still working on your first: 10-15 second flexed-arm hangs or dead hangs.',sets:[]},
+          {c:'',n:'Snatch',note:'10 reps per side. Heaviest bell you can hit 10 clean reps with, 16-24kg.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',
+           sets:[{l:'Time',t:'5 rounds, no rest between rounds',k:'time'},{l:'Bell',t:'Snatch weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '3':[
+        {t:'Superset A · 20 minutes', rest:'Rest as needed inside the 20 minutes', restSec:0, ex:[
+          {c:'A1',n:'Double Push Press Accumulation',
+           note:'As many sets of 2 reps at your 5rm as you can inside 20 minutes. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 2 reps @ 5rm in 20 min',k:'wr'}]},
+          {c:'A2',n:'Deadlift Accumulation',
+           note:'As many sets of 2-3 reps at your 5rm as possible. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 2-3 reps @ 5rm',k:'wr'}]}
+        ]},
+        {t:'Exercise B1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'B1',n:'Hanging Leg Raise',
+           note:'Progression: bend the knees but extend the legs as much as you can. Bonus: extend them as you lower.',
+           sets:[{l:'Set 1',t:'5 reps',k:'reps'},{l:'Set 2',t:'5 reps',k:'reps'},{l:'Set 3',t:'5 reps',k:'reps'}]}
+        ]},
+        {t:'Exercise C1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'C1',n:'Ab Wheel Rollout',
+           note:'Progression: roll up a slight incline, or roll out as far as you can with clean technique.',
+           sets:[{l:'Set 1',t:'5 reps',k:'reps'},{l:'Set 2',t:'5 reps',k:'reps'}]}
+        ]}
+      ],
+
+      '4':[
+        {t:'Exercise A1 · Mobility', rest:'30 sec between sets', restSec:30, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',
+           sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Developer Circuit', rest:'5 rounds', restSec:0, ex:[
+          {c:'',n:'Pistol Squat Ladder',note:'1 rep per leg in round one, up by one each round to 5. TRX straps or a light kettlebell for counterbalance if needed.',sets:[]},
+          {c:'',n:'Snatch',note:'10 reps per side, 16-20kg.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds',k:'time'},{l:'Bell',t:'Snatch weight used',k:'wr'}]}
+        ]}
+      ]
+    }},
+
+    /* ===================== WEEKS 3 & 4 ===================== */
+    { n:2, label:'Weeks 3 & 4', from:3, to:4, warmup:[], workouts:{
+
+      '1':[
+        {t:'Superset A · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',sets:[{l:'Set 1',t:'20 sec',k:'time'},{l:'Set 2',t:'20 sec',k:'time'},{l:'Set 3',t:'20 sec',k:'time'}]},
+          {c:'A2',n:'Low Butt Leopard Crawl',sets:[{l:'Set 1',t:'20 sec',k:'time'},{l:'Set 2',t:'20 sec',k:'time'},{l:'Set 3',t:'20 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'40 sec',k:'time'},{l:'Set 2',t:'40 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Exercise A1 · Strength', rest:'2 min between sets', restSec:120, ex:[
+          {c:'A1',n:'Double Clean and Press',
+           sets:[{l:'Set 1',t:'8 reps @ 10-12rm',k:'wr'},{l:'Set 2',t:'8 reps @ 10-12rm',k:'wr'},{l:'Set 3',t:'8 reps @ 10-12rm',k:'wr'},{l:'Set 4',t:'8 reps @ 10-12rm',k:'wr'}]}
+        ]},
+        {t:'Superset B · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'B1',n:'Front Squat',
+           sets:[{l:'Set 1',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 2',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 3',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 4',t:'10 reps @ 12-15rm',k:'wr'}]},
+          {c:'B2',n:'Pull-Up',
+           note:'If you cannot manage 5, do as many as possible. If none, 3 sets of 10-15 second flexed-arm hangs with a slow lowering.',
+           sets:[{l:'Set 1',t:'5 reps @ bodyweight',k:'reps'},{l:'Set 2',t:'5 reps @ bodyweight',k:'reps'},{l:'Set 3',t:'Max reps @ bodyweight',k:'reps'}]}
+        ]},
+        {t:'Superset C · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'C1',n:"Farmer Carry",note:'Heaviest weight you can hold for the full 30 seconds.',
+           sets:[{l:'Set 1',t:'30 sec',k:'wr'},{l:'Set 2',t:'30 sec',k:'wr'},{l:'Set 3',t:'30 sec',k:'wr'}]},
+          {c:'C2',n:'Tempo Push-Up',note:'2 seconds down, 1 second up.',
+           sets:[{l:'Set 1',t:'20 sec',k:'reps'},{l:'Set 2',t:'20 sec',k:'reps'},{l:'Set 3',t:'20 sec',k:'reps'}]}
+        ]},
+        {t:'Conditioning', rest:'Finish', restSec:0, ex:[
+          {c:'',n:'Kettlebell Swing',note:'150 reps as quickly as possible. 20-24kg.',
+           sets:[{l:'Time',t:'150 reps for time',k:'time'},{l:'Bell',t:'Weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '2':[
+        {t:'Developer Circuit', rest:'5 rounds, no rest between rounds', restSec:0, ex:[
+          {c:'',n:'Pull-Up Ladder',note:'1 rep in round one, up by one each round to 5.',sets:[]},
+          {c:'',n:'Deadlift',note:'5 reps at your 10rm. Fast and snappy, this is about power and speed.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds, no rest between rounds',k:'time'},{l:'Load',t:'Deadlift weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '3':[
+        {t:'Superset A · 20 minutes', rest:'Rest as needed inside the 20 minutes', restSec:0, ex:[
+          {c:'A1',n:'Front Squat Accumulation',
+           note:'As many sets of 3 reps as possible in 20 minutes with your 5-7 rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 3 reps in 20 min',k:'wr'}]},
+          {c:'A2',n:'Chin-Up Accumulation',
+           note:'As many sets of 2-3 reps as possible in 20 minutes with your 5-rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 2-3 reps in 20 min',k:'wr'}]}
+        ]},
+        {t:'Exercise B1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'B1',n:'Hanging Leg Raise',sets:[{l:'Set 1',t:'5 reps',k:'reps'},{l:'Set 2',t:'5 reps',k:'reps'},{l:'Set 3',t:'5 reps',k:'reps'}]}
+        ]},
+        {t:'Exercise C1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'C1',n:'Ab Wheel Rollout',sets:[{l:'Set 1',t:'5 reps',k:'reps'},{l:'Set 2',t:'5 reps',k:'reps'}]}
+        ]}
+      ],
+
+      '4':[
+        {t:'Exercise A1 · Mobility', rest:'30 sec between sets', restSec:30, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Developer Circuit', rest:'5 rounds', restSec:0, ex:[
+          {c:'',n:'Pistol Squat Ladder',note:'1 rep per leg in round one, up by one each round to 5.',sets:[]},
+          {c:'',n:'Snatch',note:'10 reps per side, 16-20kg.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds',k:'time'},{l:'Bell',t:'Snatch weight used',k:'wr'}]}
+        ]}
+      ]
+    }},
+
+    /* ===================== WEEKS 5 & 6 ===================== */
+    { n:3, label:'Weeks 5 & 6', from:5, to:6, warmup:[], workouts:{
+
+      '1':[
+        {t:'Superset A · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]},
+          {c:'A2',n:'Mobility Squat Sit',note:'Light counterbalance if you need it.',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]},
+          {c:'A3',n:'Frog Stretch',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'},{l:'Set 3',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Exercise A1 · Strength', rest:'2 min between sets', restSec:120, ex:[
+          {c:'A1',n:'Double Military Press',
+           sets:[{l:'Set 1',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 2',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 3',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 4',t:'10 reps @ 10-12rm',k:'wr'}]}
+        ]},
+        {t:'Superset B · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'B1',n:'Front Squat',
+           sets:[{l:'Set 1',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 2',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 3',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 4',t:'10 reps @ 12-15rm',k:'wr'}]},
+          {c:'B2',n:'Chin-Ups',
+           note:'Palms toward you. Use assistance if needed, or work the hardest progression you can manage for 5 reps.',
+           sets:[{l:'Set 1',t:'5 reps @ 7-8rm',k:'reps'},{l:'Set 2',t:'5 reps @ 7-8rm',k:'reps'},{l:'Set 3',t:'Max reps @ bodyweight',k:'reps'},{l:'Set 4',t:'Max reps @ bodyweight',k:'reps'}]}
+        ]},
+        {t:'Superset C · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'C1',n:'Deadlift + Farmer Carry',
+           note:'5 deadlifts straight into a 30 second carry. Heaviest weight you can hold for the full 30 seconds.',
+           sets:[{l:'Set 1',t:'5 deadlifts + 30 sec carry',k:'wr'},{l:'Set 2',t:'5 deadlifts + 30 sec carry',k:'wr'},{l:'Set 3',t:'5 deadlifts + 30 sec carry',k:'wr'}]},
+          {c:'C2',n:'Feet Elevated Tempo Push-Up',
+           note:'2 seconds down, 1 second up. If fatigued, hold a plank or do the lowering phase only.',
+           sets:[{l:'Set 1',t:'20 sec',k:'reps'},{l:'Set 2',t:'20 sec',k:'reps'},{l:'Set 3',t:'20 sec',k:'reps'}]}
+        ]},
+        {t:'Conditioning', rest:'Finish', restSec:0, ex:[
+          {c:'',n:'Single Arm Kettlebell Swing',note:'100 reps as quickly as possible. 20-24kg.',
+           sets:[{l:'Time',t:'100 reps for time',k:'time'},{l:'Bell',t:'Weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '2':[
+        {t:'Developer Circuit', rest:'5 rounds, no rest between rounds', restSec:0, ex:[
+          {c:'',n:'Pull-Up Ladder',note:'1 rep in round one, up by one each round to 5.',sets:[]},
+          {c:'',n:'Deadlift',note:'3 reps at your 5-7rm. Heavy.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds, no rest between rounds',k:'time'},{l:'Load',t:'Deadlift weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '3':[
+        {t:'Superset A · 20 minutes', rest:'Rest as needed inside the 20 minutes', restSec:0, ex:[
+          {c:'A1',n:'Double Clean and Push Press Accumulation',
+           note:'Alternate the two for 20 minutes, accumulating as many quality sets as you can. 3 reps at your 5-7 rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 3 reps @ 5-7rm',k:'wr'}]},
+          {c:'A2',n:'Bent Over Row Accumulation',
+           note:'5 reps at your 8-rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 5 reps @ 8rm',k:'wr'}]}
+        ]},
+        {t:'Exercise B1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'B1',n:'Hanging Leg Raise',sets:[{l:'Set 1',t:'10 reps',k:'reps'},{l:'Set 2',t:'10 reps',k:'reps'},{l:'Set 3',t:'10 reps',k:'reps'}]}
+        ]},
+        {t:'Exercise C1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'C1',n:'Ab Wheel Rollout',sets:[{l:'Set 1',t:'5 reps',k:'reps'},{l:'Set 2',t:'5 reps',k:'reps'},{l:'Set 3',t:'5 reps',k:'reps'}]}
+        ]}
+      ],
+
+      '4':[
+        {t:'Exercise A1 · Mobility', rest:'30 sec between sets', restSec:30, ex:[
+          {c:'A1',n:'Low Butt Leopard Crawl',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'15-30 sec',k:'time'},{l:'Set 2',t:'15-30 sec',k:'time'}]}
+        ]},
+        {t:'Developer Circuit', rest:'5 rounds', restSec:0, ex:[
+          {c:'',n:'Pistol Squat Ladder',note:'1 rep per leg in round one, up by one each round to 5. TRX straps or a light kettlebell for counterbalance if needed.',sets:[]},
+          {c:'',n:'Snatch',note:'3 reps per side, 24-32kg.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds',k:'time'},{l:'Bell',t:'Snatch weight used',k:'wr'}]}
+        ]}
+      ]
+    }},
+
+    /* ===================== WEEKS 7 & 8 ===================== */
+    { n:4, label:'Weeks 7 & 8', from:7, to:8, warmup:[], workouts:{
+
+      '1':[
+        {t:'Superset A · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'A1',n:'High Butt Bear Crawl',sets:[{l:'Set 1',t:'60 sec',k:'time'},{l:'Set 2',t:'60 sec',k:'time'}]},
+          {c:'A2',n:'Mobility Squat Sit',sets:[{l:'Set 1',t:'60 sec',k:'time'},{l:'Set 2',t:'60 sec',k:'time'}]},
+          {c:'A3',n:'Frog Stretch',sets:[{l:'Set 1',t:'60 sec',k:'time'},{l:'Set 2',t:'60 sec',k:'time'}]},
+          {c:'A4',n:'Hip Flexor Stretch',sets:[{l:'Set 1',t:'30 sec per side',k:'time'},{l:'Set 2',t:'30 sec per side',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'45 sec',k:'time'},{l:'Set 2',t:'45 sec',k:'time'},{l:'Set 3',t:'45 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'45 sec',k:'time'},{l:'Set 2',t:'45 sec',k:'time'},{l:'Set 3',t:'45 sec',k:'time'}]}
+        ]},
+        {t:'Superset A · Strength', rest:'30 sec between exercises · 2 min between rounds', restSec:120, ex:[
+          {c:'A1',n:'Double Military Press',
+           sets:[{l:'Set 1',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 2',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 3',t:'10 reps @ 10-12rm',k:'wr'},{l:'Set 4',t:'10 reps @ 10-12rm',k:'wr'}]},
+          {c:'A2',n:'Feet Elevated Push-Up',
+           sets:[{l:'Set 1',t:'Max reps @ bodyweight',k:'reps'},{l:'Set 2',t:'Max reps',k:'reps'},{l:'Set 3',t:'Max reps',k:'reps'},{l:'Set 4',t:'Max reps',k:'reps'}]}
+        ]},
+        {t:'Superset B · Strength', rest:'30 sec between exercises · 90 sec between rounds', restSec:90, ex:[
+          {c:'B1',n:'Front Squat',
+           sets:[{l:'Set 1',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 2',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 3',t:'10 reps @ 12-15rm',k:'wr'},{l:'Set 4',t:'10 reps @ 12-15rm',k:'wr'}]},
+          {c:'B2',n:'Chin-Up',
+           note:'Use assistance if needed, or work the hardest progression you can manage.',
+           sets:[{l:'Set 1',t:'3 reps @ 5rm',k:'reps'},{l:'Set 2',t:'3 reps @ 5rm',k:'reps'},{l:'Set 3',t:'3 reps @ 5rm',k:'reps'},{l:'Set 4',t:'3 reps @ 5rm',k:'reps'},{l:'Set 5',t:'Max reps @ bodyweight',k:'reps'},{l:'Set 6',t:'Max reps @ bodyweight',k:'reps'}]}
+        ]},
+        {t:'Exercise C1', rest:'90 sec between sets', restSec:90, ex:[
+          {c:'C1',n:'Deadlift + Farmer Carry',
+           note:'5 deadlifts straight into a 30 second carry. Heaviest weight you can hold for the full 30 seconds.',
+           sets:[{l:'Set 1',t:'5 deadlifts + 30 sec carry',k:'wr'},{l:'Set 2',t:'5 deadlifts + 30 sec carry',k:'wr'},{l:'Set 3',t:'5 deadlifts + 30 sec carry',k:'wr'},{l:'Set 4',t:'5 deadlifts + 30 sec carry',k:'wr'}]}
+        ]},
+        {t:'Conditioning', rest:'Finish', restSec:0, ex:[
+          {c:'',n:'Single Arm Kettlebell High Pull',note:'50 reps per side as quickly as possible. 20-24kg.',
+           sets:[{l:'Time',t:'50 reps per side for time',k:'time'},{l:'Bell',t:'Weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '2':[
+        {t:'Developer Circuit', rest:'5 rounds, no rest between rounds', restSec:0, ex:[
+          {c:'',n:'Chin-Up Ladder',note:'3 reps in round one, up by one each round to 7.',sets:[]},
+          {c:'',n:'Deadlift',note:'10 reps at your 15rm. Powerful.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds, no rest between rounds',k:'time'},{l:'Load',t:'Deadlift weight used',k:'wr'}]}
+        ]}
+      ],
+
+      '3':[
+        {t:'Superset A · 20 minutes', rest:'Rest as needed inside the 20 minutes', restSec:0, ex:[
+          {c:'A1',n:'Double Clean and Push Press Accumulation',
+           note:'Alternate the two for 20 minutes, accumulating as many quality sets as you can. 5 reps at your 8 rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 5 reps @ 8rm',k:'wr'}]},
+          {c:'A2',n:'Bent Over Row Accumulation',
+           note:'3 reps at your 5 rep max. Put the number of sets in the reps box.',
+           sets:[{l:'Total',t:'Sets of 3 reps @ 5rm',k:'wr'}]}
+        ]},
+        {t:'Exercise B1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'B1',n:'Hanging Leg Raise',sets:[{l:'Set 1',t:'12 reps',k:'reps'},{l:'Set 2',t:'12 reps',k:'reps'},{l:'Set 3',t:'12 reps',k:'reps'}]}
+        ]},
+        {t:'Exercise C1', rest:'60 sec between sets', restSec:60, ex:[
+          {c:'C1',n:'Ab Wheel Rollout',sets:[{l:'Set 1',t:'7 reps',k:'reps'},{l:'Set 2',t:'7 reps',k:'reps'},{l:'Set 3',t:'7 reps',k:'reps'}]}
+        ]}
+      ],
+
+      '4':[
+        {t:'Exercise A1 · Mobility', rest:'30 sec between sets', restSec:30, ex:[
+          {c:'A1',n:'Low Butt Leopard Crawl',sets:[{l:'Set 1',t:'30 sec',k:'time'},{l:'Set 2',t:'30 sec',k:'time'},{l:'Set 3',t:'30 sec',k:'time'}]}
+        ]},
+        {t:'Superset B · Mobility', rest:'20 sec between exercises · 45 sec between rounds', restSec:45, ex:[
+          {c:'B1',n:'Hollow Hold',sets:[{l:'Set 1',t:'45 sec',k:'time'},{l:'Set 2',t:'45 sec',k:'time'}]},
+          {c:'B2',n:'Face the Wall Handstand',sets:[{l:'Set 1',t:'30-45 sec',k:'time'},{l:'Set 2',t:'30-45 sec',k:'time'}]}
+        ]},
+        {t:'Developer Circuit', rest:'5 rounds', restSec:0, ex:[
+          {c:'',n:'Pistol Squat Ladder',note:'1 rep per leg in round one, up by one each round to 5.',sets:[]},
+          {c:'',n:'Snatch',note:'10 reps per side, 20-24kg.',sets:[]},
+          {c:'',n:'Jog, Skip or Jump Rope',note:'2 minutes.',sets:[]},
+          {c:'C',n:'Circuit',sets:[{l:'Time',t:'5 rounds',k:'time'},{l:'Bell',t:'Snatch weight used',k:'wr'}]}
+        ]}
+      ]
+    }}
+  ]
+}
 
 };
 
@@ -950,6 +1449,23 @@ function phaseForWeek(prog, wk){
   return prog.phases[prog.phases.length-1];
 }
 function prog(){ return PROGRAMMES[S.programme] || PROGRAMMES.lean_bastard; }
+
+/* "Workout A" for Lean Bastard, "Day 1" for Standardized Strength. */
+function wordFor(id){ var p = PROGRAMMES[id]; return (p && p.wname) || 'Workout'; }
+function wlabel(L, id){ return wordFor(id || S.programme) + ' ' + L; }
+
+/* Each programme keeps its own place, so you can run something else for a
+   few weeks and come back to exactly where you left off. */
+function switchProgramme(id){
+  if(!PROGRAMMES[id] || id === S.programme) return;
+  S.pos = S.pos || {};
+  S.pos[S.programme] = { week:S.week, next:S.next };     // park the old one
+  var saved = S.pos[id];
+  S.programme = id;
+  S.week = saved ? saved.week : 1;
+  S.next = saved ? saved.next : PROGRAMMES[id].order[0];
+  save(K.set, S);
+}
 
 /* personal bests, derived from the session log */
 function bestFor(exName, kind){
@@ -1087,14 +1603,80 @@ function show(id){
   var sc = $('v-'+id).querySelector('.scroll'); if(sc) sc.scrollTop=0;
 }
 
+/* ---------- Theme ---------- */
+function applyTheme(id){
+  var p = PROGRAMMES[id || S.programme];
+  var t = (p && p.theme) || 'lb';
+  document.body.dataset.theme = t;
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', t === 'ss' ? '#1E2124' : '#000000');
+}
+
+/* ---------- Choose a programme ---------- */
+function renderChoose(){
+  document.body.dataset.theme = 'lb';      // the chooser is always the base look
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', '#000000');
+
+  var rb = $('resumeBtn');
+  if(ACT){
+    var ap = PROGRAMMES[ACT.programme] || prog();
+    rb.hidden = false;
+    rb.innerHTML = 'Resume session<span>' + esc(ap.name + ' · ' +
+                   wlabel(ACT.workout, ACT.programme) + ' · Week ' + ACT.week) + '</span>';
+  } else {
+    rb.hidden = true;
+  }
+
+  var w = $('chooseWrap'); w.innerHTML='';
+  Object.keys(PROGRAMMES).forEach(function(id){
+    var p = PROGRAMMES[id];
+    var pos = (id === S.programme)
+      ? { week:S.week, next:S.next }
+      : ((S.pos && S.pos[id]) || { week:1, next:p.order[0] });
+    var logged = SES.filter(function(s){ return s.programme === id; }).length;
+
+    var card = el('button','pcard ' + (p.theme || 'lb'));
+    card.appendChild(el('div','pname', esc(p.name)));
+    card.appendChild(el('div','pby', esc(p.by)));
+
+    var bar = el('div','pbar');
+    for(var i=1;i<=p.weeks;i++){
+      var seg = el('i'); if(i < pos.week) seg.className='on'; bar.appendChild(seg);
+    }
+    card.appendChild(bar);
+
+    card.appendChild(el('div','ppos', 'Week ' + pos.week + ' of ' + p.weeks + ' · ' +
+                                      wlabel(pos.next, id) + ' next'));
+    card.appendChild(el('div','pmeta', logged
+      ? (logged + ' session' + (logged>1?'s':'') + ' logged')
+      : 'Not started'));
+    card.appendChild(el('div','pgo', id === S.programme ? 'Continue' : 'Open'));
+
+    card.addEventListener('click', function(){
+      switchProgramme(id);
+      applyTheme(id);
+      renderHome();
+      show('home');
+    });
+    w.appendChild(card);
+  });
+}
+
 /* ---------- Home ---------- */
 function renderHome(){
   var p = prog(), ph = phaseForWeek(p, S.week);
-  $('homeTag').textContent = p.name + ' · ' + p.by;
-  $('nowPhase').textContent = ph.label + ' · Week ' + S.week;
-  $('nowWorkout').textContent = 'Workout ' + S.next;
-  $('startLabel').textContent = (ACT ? 'Resume Workout ' + ACT.workout : 'Start Workout ' + S.next);
-  $('startBtn').querySelector('.sub').textContent = ACT ? 'Session in progress' : 'Begin session';
+  $('homeName').textContent = p.name;
+  $('homeTag').textContent = p.by;
+  $('nowPhase').textContent = ph.label;
+  $('upNextKicker').textContent = 'Week ' + S.week + ' of ' + p.weeks;
+  $('nowWorkout').textContent = wlabel(S.next);
+  var mine = ACT && ACT.programme === S.programme;
+  $('startLabel').textContent = mine ? ('Resume ' + wlabel(ACT.workout, ACT.programme))
+                                     : ('Start ' + wlabel(S.next));
+  $('startBtn').querySelector('.sub').textContent =
+    mine ? 'Session in progress'
+         : (ACT ? 'Unfinished session in ' + (PROGRAMMES[ACT.programme]||{}).name : 'Begin session');
 
   var wb = $('weekbar'); wb.innerHTML='';
   for(var w=1; w<=p.weeks; w++){
@@ -1113,7 +1695,8 @@ function renderHome(){
     $('deltsMeta').textContent = DLT.start ? 'Challenge complete' : 'Start the 30-day challenge';
   }
 
-  $('videosMeta').textContent = videoIndex().length + ' demos';
+  var vn = videoIndex().length;
+  $('videosMeta').textContent = vn ? (vn + ' demos') : 'Link to the demo channel';
   $('historyMeta').textContent = SES.length ? SES.length + ' session' + (SES.length>1?'s':'') + ' logged' : 'No sessions yet';
   $('standardsMeta').textContent = STD.length ? 'Last tested ' + shortDate(STD[STD.length-1].date) : '6 tests · not taken yet';
   $('settingsMeta').textContent = S.bodyweight ? S.bodyweight + ' ' + S.unit : 'Set your bodyweight';
@@ -1127,13 +1710,15 @@ function shortDate(iso){
 /* ==================================================================
    SESSION
    ================================================================== */
-function buildSession(letter, week, adhoc){
+function buildSession(letter, week, adhoc, progId){
   week = week || S.week;
-  var p = prog(), ph = phaseForWeek(p, week);
+  var p = PROGRAMMES[progId || S.programme] || prog();
+  var ph = phaseForWeek(p, week);
   var blocks = [];
 
-  // warm-up as one screen: every item is a single tap to confirm
-  blocks.push({ t:'Warm-up', rest:'Do this before every workout', restSec:0, warm:true,
+  // warm-up as one screen: every item is a single tap to confirm.
+  // Some programmes build the mobility work into the day itself.
+  if(ph.warmup && ph.warmup.length) blocks.push({ t:'Warm-up', rest:'Do this before every workout', restSec:0, warm:true,
     ex: ph.warmup.map(function(x){
       return { c:x.c, n:x.n, v:x.v, note:x.note,
                sets:[{ l:'', t:(x.sets||[]).map(function(s){ return s.t; }).join(' · '), k:'check' }] };
@@ -1158,7 +1743,7 @@ function buildSession(letter, week, adhoc){
   }
 
   return {
-    programme:S.programme, workout:letter, week:week, phase:ph.n,
+    programme:p.id, workout:letter, week:week, phase:ph.n,
     adhoc: !!adhoc,          // a one-off does not move the programme on
     startedAt:new Date().toISOString(), i:0, blocks:blocks, data:{}
   };
@@ -1169,7 +1754,7 @@ function syncDelts(){
   var has = ACT.blocks.some(function(b){ return b.delt; });
   var d = deltsToday();
   if(!d || !d.isLift || !d.work.length || has) return;
-  var fresh = buildSession(ACT.workout, ACT.week, ACT.adhoc);
+  var fresh = buildSession(ACT.workout, ACT.week, ACT.adhoc, ACT.programme);
   var open = fresh.blocks.filter(function(b){ return b.delt === 'start'; });
   var close = fresh.blocks.filter(function(b){ return b.delt === 'end'; });
   ACT.blocks.splice(1, 0, open[0]);          // straight after the warm-up
@@ -1178,19 +1763,27 @@ function syncDelts(){
   save(K.act, ACT);
 }
 
-function startSession(letter, week, adhoc){
-  ACT = buildSession(letter, week, adhoc);
+function startSession(letter, week, adhoc, progId){
+  ACT = buildSession(letter, week, adhoc, progId);
+  applyTheme(ACT.programme);
   save(K.act, ACT);
   keepAwake();
   show('session');
   renderBlock();
 }
 
+function sizeBars(){
+  var n = $('barwrap');
+  if(n) document.documentElement.style.setProperty('--barwrap-h', n.offsetHeight + 'px');
+}
+window.addEventListener('resize', sizeBars);
+
 function renderBlock(){
   if(!ACT) return show('home');
+  setTimeout(sizeBars, 0);
   var b = ACT.blocks[ACT.i];
   var p = prog(), ph = phaseForWeek(p, ACT.week);
-  $('sessTitle').textContent = 'Workout ' + ACT.workout + ' · Wk ' + ACT.week;
+  $('sessTitle').textContent = wlabel(ACT.workout, ACT.programme) + ' · Wk ' + ACT.week;
 
   var segs = $('segs'); segs.innerHTML='';
   for(var i=0;i<ACT.blocks.length;i++){
@@ -1288,8 +1881,8 @@ function renderSet(x, i, inRound){
     var btn = el('button','timebtn');
     var secs = rec.sec != null ? rec.sec : 0;
     btn.innerHTML = '<span>'+fmtTime(secs)+'</span><small>'+(rec.done?'Tap to redo':'Tap to start')+'</small>';
-    btn.dataset.key = key; btn.dataset.name = x.n;
-    btn.addEventListener('click', function(){ toggleStopwatch(this); });
+    btn.dataset.key = key; btn.dataset.name = x.n; btn.dataset.idx = i;
+    btn.addEventListener('click', function(){ toggleStopwatch(this, x); });
     entry.appendChild(btn);
 
   } else if(st.k === 'check'){
@@ -1299,6 +1892,7 @@ function renderSet(x, i, inRound){
       node.classList.toggle('done', rec.done);
       tick.innerHTML = rec.done ? '&#10003; Completed' : 'Confirm completed';
       tick.classList.toggle('is-done', rec.done);
+      if(rec.done) afterSetDone(x, i);
     });
     if(rec.done) tick.classList.add('is-done');
     entry.appendChild(tick);
@@ -1312,7 +1906,8 @@ function renderSet(x, i, inRound){
     tick2.addEventListener('click', function(){
       rec.done = !rec.done; commit(key, rec, x.n, st);
       node.classList.toggle('done', rec.done);
-      tick2.innerHTML = '&#10003;';
+      tick2.classList.toggle('off', !rec.done);
+      if(rec.done) afterSetDone(x, i);
     });
     entry.appendChild(tick2);
   }
@@ -1343,7 +1938,7 @@ function commit(key, rec, name, st){
 
 /* ---------- stopwatch ---------- */
 var running = null;   // {key, started, btn}
-function toggleStopwatch(btn){
+function toggleStopwatch(btn, x){
   var key = btn.dataset.key;
   if(running && running.key === key){
     var sec = (Date.now() - running.started)/1000;
@@ -1357,6 +1952,7 @@ function toggleStopwatch(btn){
     beep();
     var pbv = bestFor(btn.dataset.name, 'time');
     if(pbv!=null && rec.sec > pbv) toast('New best · ' + fmtTime(rec.sec));
+    if(x) afterSetDone(x, parseInt(btn.dataset.idx, 10));
     return;
   }
   if(running){ running.btn.classList.remove('running'); }
@@ -1373,6 +1969,55 @@ function tickStopwatch(){
   setTimeout(tickStopwatch, 250);
 }
 function refreshRunningClocks(){ if(running) tickStopwatch(); }
+
+/* A superset is alternated; a straight-set block is not. */
+function isPaired(b){
+  return !!b && (b.pair === true || /^Superset/i.test(b.t)) && b.ex && b.ex.length >= 2 &&
+         b.ex.every(function(x){ return x.sets && x.sets.length; });
+}
+
+/* Pull the short rest out of the block's own prescription, e.g.
+   "30 sec between exercises · 90 sec between supersets" -> 30.
+   Where a range is given, take the lower end. */
+function restBetweenExercises(b){
+  var s = b && b.rest ? String(b.rest) : '';
+  if(/no rest/i.test(s)) return 0;
+  var m = s.match(/(\d+)(?:\s*-\s*\d+)?\s*sec between (?:exercises|legs)/i);
+  if(m) return parseInt(m[1], 10);
+  return null;
+}
+
+/* Called whenever a set is marked done. Works out what comes next and
+   puts the right clock on screen without being asked. */
+function afterSetDone(x, i){
+  if(!ACT || S.autoRest === false) return;
+  // Some programmes prescribe no rest. Don't invent one; the manual
+  // buttons under the session are there for when you want a clock.
+  if((PROGRAMMES[ACT.programme] || {}).restMode === 'manual') return;
+  var b = ACT.blocks[ACT.i];
+  if(!b || b.warm || b.delt) return;        // checklists and delt holds need no rest
+
+  var idx = b.ex.indexOf(x);
+  if(idx === -1) return;
+
+  if(isPaired(b)){
+    // still another exercise to do in this round?
+    for(var j=idx+1; j<b.ex.length; j++){
+      if(b.ex[j].sets[i]){
+        var short = restBetweenExercises(b);
+        return startRest(short == null ? b.restSec : short,
+                         'Next: ' + (b.ex[j].c ? b.ex[j].c + ' ' : '') + b.ex[j].n);
+      }
+    }
+    // round finished: rest the long one before the next round
+    var more = b.ex.some(function(y){ return y.sets[i+1]; });
+    if(more) return startRest(b.restSec, 'Next: Round ' + (i+2));
+    return;                                  // block done, Next handles it
+  }
+
+  // straight sets: rest between sets of the same exercise
+  if(x.sets[i+1]) return startRest(b.restSec, 'Next: ' + (x.sets[i+1].l || 'next set'));
+}
 
 /* ---------- rest overlay ---------- */
 var restEnd=null, restTimer=null;
@@ -1392,7 +2037,10 @@ function tickRest(){
   var c = $('ovClock');
   c.textContent = fmtTime(Math.max(0,left));
   c.classList.toggle('zero', left<=0);
-  if(left<=0 && !c.dataset.rung){ c.dataset.rung='1'; beep(); }
+  if(left<=0 && !c.dataset.rung){
+    c.dataset.rung='1'; beep();
+    setTimeout(function(){ if(restEnd!=null && Date.now() >= restEnd) endRest(); }, 1800);
+  }
   if(left>0) delete c.dataset.rung;
   restTimer = setTimeout(tickRest, 250);
 }
@@ -1401,7 +2049,16 @@ function endRest(){
   delete $('ovClock').dataset.rung;
   $('overlay').classList.remove('on');
 }
+Array.prototype.forEach.call(document.querySelectorAll('.restbar [data-rest]'), function(b){
+  b.addEventListener('click', function(){
+    startRest(parseInt(b.dataset.rest, 10), '');
+    keepAwake();
+  });
+});
 $('ovSkip').addEventListener('click', endRest);
+$('overlay').addEventListener('click', function(e){
+  if(e.target === this) endRest();          // tap the background to get back
+});
 $('ovAdd').addEventListener('click', function(){ if(restEnd) { restEnd += 30000; tickRest(); } });
 
 /* ---------- navigation ---------- */
@@ -1412,14 +2069,15 @@ $('btnNext').addEventListener('click', function(){
   ACT.i++; save(K.act, ACT);
   renderBlock();
   var nb = ACT.blocks[ACT.i];
-  if(b.restSec) startRest(b.restSec, 'Up next: ' + nb.t);
+  var manual = (PROGRAMMES[ACT.programme] || {}).restMode === 'manual';
+  if(b.restSec && !manual && S.autoRest !== false) startRest(b.restSec, 'Up next: ' + nb.t);
 });
 $('btnPrev').addEventListener('click', function(){
   if(!ACT || ACT.i===0) return;
   ACT.i--; save(K.act, ACT); renderBlock();
 });
 $('sessExit').addEventListener('click', function(){
-  show('home'); renderHome();
+  applyTheme(); show('home'); renderHome();
   toast('Session kept — resume any time');
 });
 $('sessFinish').addEventListener('click', finishSession);
@@ -1453,7 +2111,7 @@ function finishSession(){
     id: Date.now(),
     date: new Date().toISOString(),
     programme: ACT.programme,
-    name: prog().name,
+    name: (PROGRAMMES[ACT.programme] || prog()).name,
     workout: ACT.workout,
     week: ACT.week,
     phase: ACT.phase,
@@ -1465,18 +2123,27 @@ function finishSession(){
 
   // Advance the rotation only for a scheduled session. A workout picked by
   // hand is a one-off: it is logged as normal but leaves your place alone.
-  if(!ACT.adhoc){
-    var order = prog().order;
+  if(!ACT.adhoc && PROGRAMMES[ACT.programme]){
+    var op = PROGRAMMES[ACT.programme];
+    var order = op.order;
     var pos = order.indexOf(ACT.workout);
-    var nextPos = (pos+1) % order.length;
-    S.next = order[nextPos];
-    if(nextPos === 0 && S.week < prog().weeks) S.week++;
+    var nextPos = (pos + 1) % order.length;
+    var nextWeek = ACT.week;
+    if(nextPos === 0 && nextWeek < op.weeks) nextWeek++;
+    if(ACT.programme === S.programme){
+      S.next = order[nextPos]; S.week = nextWeek;
+    } else {
+      // finished while viewing another programme: move its parked place on
+      S.pos = S.pos || {};
+      S.pos[ACT.programme] = { week:nextWeek, next:order[nextPos] };
+    }
     save(K.set, S);
   }
   var wasAdhoc = ACT.adhoc;
 
   ACT = null; save(K.act, null);
   endRest();
+  applyTheme();
   show('home'); renderHome();
   toast(wasAdhoc ? 'Saved — your place is unchanged' : 'Session saved');
 }
@@ -1599,6 +2266,7 @@ function renderStandards(){
   var head = el('div','blockhead');
   head.appendChild(el('div','kicker', last.date ? 'Last tested ' + shortDate(last.date) : 'Baseline'));
   head.appendChild(el('h2', null, 'Six Tests'));
+  head.appendChild(el('div','muted','From the Lean Bastard manual. Worth retesting whichever programme you are running.'));
   w.appendChild(head);
   w.appendChild(el('div','restnote','Record your results before week 1, then retest at the end. These cover the qualities the big three miss: grip, balance, mobility, postural endurance and body control.'));
 
@@ -1683,8 +2351,10 @@ function paintTiers(tiers, t, v){
 var PICK = null;
 
 function renderPick(){
-  var p = prog();
-  if(!PICK) PICK = { week:S.week, letter:S.next };
+  if(!PICK) PICK = { programme:S.programme, week:S.week, letter:S.next };
+  var p = PROGRAMMES[PICK.programme] || prog();
+  if(PICK.week > p.weeks) PICK.week = 1;
+  if(p.order.indexOf(PICK.letter) === -1) PICK.letter = p.order[0];
   var ph = phaseForWeek(p, PICK.week);
 
   var w = $('pickWrap'); w.innerHTML='';
@@ -1693,7 +2363,30 @@ function renderPick(){
   head.appendChild(el('div','kicker','Anything, any time'));
   head.appendChild(el('h2', null, 'Choose'));
   w.appendChild(head);
-  w.appendChild(el('div','restnote','Running a workout from here logs it as normal but leaves your place in the programme where it is. Use it to repeat a week, or to drop back a phase.'));
+  w.appendChild(el('div','restnote','Running something from here logs it as normal but leaves your place alone. Use it to repeat a week, or to try a session from another programme without committing to it.'));
+
+  // programme
+  var ids = Object.keys(PROGRAMMES);
+  if(ids.length > 1){
+    var f0 = el('div','fieldrow');
+    f0.appendChild(el('div','kicker','Programme'));
+    var c0 = el('div','chips');
+    ids.forEach(function(id){
+      var b = el('button','chip' + (id===PICK.programme?' on':''), PROGRAMMES[id].name);
+      b.style.fontSize='15px'; b.style.flexBasis='120px';
+      b.addEventListener('click', function(){
+        var saved = (S.pos && S.pos[id]) || null;
+        PICK.programme = id;
+        PICK.week = (id === S.programme) ? S.week : (saved ? saved.week : 1);
+        PICK.letter = (id === S.programme) ? S.next : (saved ? saved.next : PROGRAMMES[id].order[0]);
+        renderPick();
+      });
+      c0.appendChild(b);
+    });
+    f0.appendChild(c0);
+    f0.appendChild(el('div','muted', esc(p.by + ' · ' + p.weeks + ' weeks')));
+    w.appendChild(f0);
+  }
 
   // phase
   var f1 = el('div','fieldrow');
@@ -1705,7 +2398,7 @@ function renderPick(){
     c1.appendChild(b);
   });
   f1.appendChild(c1);
-  f1.appendChild(el('div','muted','Weeks ' + ph.from + ' to ' + ph.to));
+  f1.appendChild(el('div','muted', esc(ph.label)));
   w.appendChild(f1);
 
   // week
@@ -1722,9 +2415,9 @@ function renderPick(){
   f2.appendChild(c2);
   w.appendChild(f2);
 
-  // workout
+  // workout / day
   var f3 = el('div','fieldrow');
-  f3.appendChild(el('div','kicker','Workout'));
+  f3.appendChild(el('div','kicker', wordFor(PICK.programme)));
   var c3 = el('div','chips');
   p.order.forEach(function(L){
     var b = el('button','chip' + (L===PICK.letter?' on red':''), L);
@@ -1734,34 +2427,37 @@ function renderPick(){
   f3.appendChild(c3);
   w.appendChild(f3);
 
-  // what you picked, and how often you have done it
   var done = SES.filter(function(s){
-    return s.week === PICK.week && s.workout === PICK.letter;
+    return s.week === PICK.week && s.workout === PICK.letter && s.programme === PICK.programme;
   }).length;
 
   var sum = el('div','picksum');
-  sum.appendChild(el('div','kicker', ph.label));
-  sum.appendChild(el('div','big', 'Week ' + PICK.week + ' · Workout ' + PICK.letter));
+  sum.appendChild(el('div','kicker', p.name + ' · ' + ph.label));
+  sum.appendChild(el('div','big', 'Week ' + PICK.week + ' · ' + wlabel(PICK.letter, PICK.programme)));
   sum.appendChild(el('div','muted', done
     ? ('You have logged this ' + done + ' time' + (done>1?'s':'') + ' before')
     : 'Not logged yet'));
   w.appendChild(sum);
 
   var go = el('button','btn-huge');
-  go.innerHTML = '<span class="sub">One-off, keeps your place</span><span>Start Workout ' + PICK.letter + '</span>';
+  go.innerHTML = '<span class="sub">One-off, keeps your place</span><span>Start ' +
+                 esc(wlabel(PICK.letter, PICK.programme)) + '</span>';
   go.style.marginTop = '22px';
   go.addEventListener('click', function(){
     if(ACT && !confirm('You have a session in progress. Start this one instead and lose it?')) return;
-    startSession(PICK.letter, PICK.week, true);
+    startSession(PICK.letter, PICK.week, true, PICK.programme);
   });
   w.appendChild(go);
 
   var acts = el('div','rowbtns');
-  var mv = el('button','btn-ghost','Set as my current position');
+  var mv = el('button','btn-ghost', PICK.programme === S.programme
+    ? 'Set as my current position'
+    : ('Switch to ' + p.name));
   mv.addEventListener('click', function(){
+    switchProgramme(PICK.programme);
     S.week = PICK.week; S.next = PICK.letter; save(K.set, S);
     renderHome(); show('home');
-    toast('Moved to week ' + PICK.week + ', workout ' + PICK.letter);
+    toast('Now on ' + p.name + ', week ' + PICK.week);
   });
   acts.appendChild(mv);
   w.appendChild(acts);
@@ -1791,11 +2487,11 @@ function videoIndex(){
     walk(ph.warmup, ph.label + ' warm-up');
     p.order.forEach(function(L){
       (ph.workouts[L]||[]).forEach(function(b){
-        walk(b.ex, ph.label + ' · Workout ' + L);
+        walk(b.ex, ph.label + ' · ' + wlabel(L));
       });
     });
   });
-  STANDARDS.forEach(function(t){ add(t.n, t.v, 'Standards'); });
+  if(p.id === 'lean_bastard') STANDARDS.forEach(function(t){ add(t.n, t.v, 'Standards'); });
 
   return out;
 }
@@ -1809,8 +2505,17 @@ function renderVideos(filter){
 
   if(!list.length){
     var e = el('div','empty');
-    e.appendChild(el('h3',null,'Nothing matches'));
-    e.appendChild(el('p',null,'Try a shorter word.'));
+    var pr = prog();
+    if(!q && pr.channel){
+      e.appendChild(el('h3',null,'No demos stored'));
+      e.appendChild(el('p',null, esc(pr.by + ' has posted demos for nearly everything on his channel.')));
+      var a = el('a','vid','Open the channel');
+      a.href = pr.channel; a.target='_blank'; a.rel='noopener';
+      e.appendChild(a);
+    } else {
+      e.appendChild(el('h3',null,'Nothing matches'));
+      e.appendChild(el('p',null, q ? 'Try a shorter word.' : 'No demos stored for this programme.'));
+    }
     w.appendChild(e); return;
   }
 
@@ -1870,7 +2575,7 @@ function renderHistory(){
       var it = el('div','item');
       it.appendChild(el('div','d', shortDate(s.date)));
       var b = el('div','b');
-      b.appendChild(el('div','t', esc('Workout ' + s.workout + ' · Week ' + s.week)));
+      b.appendChild(el('div','t', esc(wlabel(s.workout, s.programme) + ' · Week ' + s.week + ' · ' + (s.name || ''))));
       var bits = s.entries.slice(0,4).map(function(e){
         if(e.sec!=null) return e.n + ' ' + fmtTime(e.sec);
         if(e.weight!=null && e.reps!=null) return e.n + ' ' + e.weight + '×' + e.reps;
@@ -1951,7 +2656,7 @@ function renderSettings(){
   f4.appendChild(el('div','kicker','Next workout'));
   var sel2 = document.createElement('select');
   prog().order.forEach(function(L){
-    var o=document.createElement('option'); o.value=L; o.textContent='Workout '+L; if(S.next===L) o.selected=true; sel2.appendChild(o);
+    var o=document.createElement('option'); o.value=L; o.textContent=wlabel(L); if(S.next===L) o.selected=true; sel2.appendChild(o);
   });
   sel2.addEventListener('change', function(){ S.next=sel2.value; save(K.set,S); renderHome(); });
   f4.appendChild(sel2);
@@ -1964,10 +2669,25 @@ function renderSettings(){
     var o=document.createElement('option'); o.value=id; o.textContent=PROGRAMMES[id].name; if(S.programme===id) o.selected=true; sel3.appendChild(o);
   });
   sel3.addEventListener('change', function(){
-    S.programme=sel3.value; S.week=1; S.next=prog().order[0]; save(K.set,S); renderHome(); renderSettings();
+    switchProgramme(sel3.value); renderHome(); renderSettings();
+    toast('Now on ' + prog().name + ', week ' + S.week);
   });
   f5.appendChild(sel3);
+  f5.appendChild(el('div','muted','Each programme remembers its own place, so you can run something else for a few weeks and come back exactly where you left off.'));
   w.appendChild(f5);
+
+  var f5b = el('div','fieldrow');
+  f5b.appendChild(el('div','kicker','Automatic rest timer'));
+  var c5 = el('div','chips');
+  [['On',true],['Off',false]].forEach(function(pair){
+    var on = (S.autoRest !== false) === pair[1];
+    var bt = el('button','chip' + (on?' on':''), pair[0]);
+    bt.addEventListener('click', function(){ S.autoRest = pair[1]; save(K.set,S); renderSettings(); });
+    c5.appendChild(bt);
+  });
+  f5b.appendChild(c5);
+  f5b.appendChild(el('div','muted','When on, finishing a set puts the clock on screen for the rest the programme asks for: the short one between exercises in a superset, the long one between rounds. It clears itself when time is up. Programmes that prescribe no rest, like Standardized Strength, never fire it automatically, and the 30s / 60s / 2m buttons under every session work either way.'));
+  w.appendChild(f5b);
 
   // ---- Google Sheet sync ----
   var f6 = el('div','fieldrow');
@@ -2029,12 +2749,23 @@ function renderSettings(){
    WIRING
    ================================================================== */
 $('startBtn').addEventListener('click', function(){
-  if(ACT){ syncDelts(); show('session'); renderBlock(); keepAwake(); return; }
+  if(ACT && ACT.programme === S.programme){
+    applyTheme(ACT.programme); syncDelts(); show('session'); renderBlock(); keepAwake(); return;
+  }
+  if(ACT){
+    var other = (PROGRAMMES[ACT.programme] || {}).name || 'another programme';
+    if(!confirm('You have an unfinished session in ' + other + '. Start a new one here and lose it?')) return;
+  }
   startSession(S.next);
 });
 $('toDelts').addEventListener('click', function(){ renderDelts(); show('delts'); });
+$('toChoose').addEventListener('click', function(){ renderChoose(); show('choose'); });
+$('resumeBtn').addEventListener('click', function(){
+  if(!ACT) return;
+  applyTheme(ACT.programme); syncDelts(); show('session'); renderBlock(); keepAwake();
+});
 $('toPick').addEventListener('click', function(){
-  PICK = { week:S.week, letter:S.next }; renderPick(); show('pick');
+  PICK = { programme:S.programme, week:S.week, letter:S.next }; renderPick(); show('pick');
 });
 $('toVideos').addEventListener('click', function(){
   $('vidSearch').value=''; renderVideos(''); show('videos');
@@ -2048,7 +2779,9 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-back]'), function(
 });
 $('deltsStrip').addEventListener('click', function(){ renderDelts(); show('delts'); });
 
+applyTheme();
 renderHome();
+renderChoose();
 flushOutbox();
 
 /* service worker */

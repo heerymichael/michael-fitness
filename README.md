@@ -5,8 +5,31 @@ lose. Every set is written to the phone's local storage the moment you log it,
 so you can lock the screen, switch to Polar, take a twenty minute rest and come
 back to exactly where you were.
 
-Currently loaded: Joe DeFranco's Lean Bastard (9 weeks, 3 phases, workouts
-A/B/C), the six Lean Bastard Standards tests, and the 30 Days of Delts booster.
+Currently loaded:
+
+- **Lean Bastard** (Joe DeFranco). 9 weeks, 3 phases, workouts A/B/C, with the
+  six Standards tests and the 30 Days of Delts booster.
+- **Standardized Strength** (Pat Flynn), beginner track. 8 weeks, four phases
+  of two weeks, four numbered days each. Flynn does not prescribe rest periods,
+  so the rest lines in the data are sensible defaults rather than his
+  instruction, and he posts demos on a channel rather than per exercise.
+
+The app opens on a programme chooser. Each card shows that programme's own
+position and how many sessions you have logged in it, and tapping one drops you
+into its menu. A session already in progress gets a Resume banner at the top,
+whichever programme it belongs to.
+
+Each programme keeps its own place, so you can run something else for a few
+weeks and come back exactly where you left off. Switch from the chooser, from
+Settings, or from the Pick a workout screen.
+
+Each programme also carries its own look. Lean Bastard is the DeFranco manual:
+paper white, true black, one hard red, condensed display type, square corners.
+Standardized Strength is warmer and rounder: off-white paper, slate ink, teal
+accent, Nunito, soft corners, sentence case. Nothing about how the app works
+changes between them. A programme picks its look with `theme:'lb'` or
+`theme:'ss'`; the themes are CSS variable blocks near the top of `index.html`,
+so adding a third is a dozen lines.
 
 ## The files
 
@@ -67,6 +90,7 @@ block. Copy the shape of `lean_bastard`:
 ```js
 my_programme: {
   id:'my_programme', name:'Name', by:'Author', weeks:8, order:['A','B'],
+  wname:'Workout',        // or 'Day' — what the app calls one session
   phases:[
     { n:1, label:'Phase 1', from:1, to:4, warmup:[...], workouts:{ A:[...], B:[...] } }
   ]
@@ -79,7 +103,17 @@ A workout is an array of blocks. A block is one screen:
 { t:'Superset 1', rest:'30 sec between exercises', restSec:90, ex:[ ... ] }
 ```
 
-`restSec` drives the rest countdown that fires when you tap Next.
+A programme can set `restMode:'manual'`, which stops the app firing any rest
+clock on its own. Standardized Strength uses it, because Flynn prescribes no
+rest periods and guessing them would be putting words in his mouth. The
+30s / 60s / 2m buttons under every session work in both modes, so you can take
+a clock whenever you want one.
+
+`restSec` is the long rest, used between rounds and between blocks. A block
+whose title starts with `Superset`, or which carries `pair:true`, is rendered
+round by round and alternates its exercises; the short rest comes from the
+`rest` string, which the app reads for a pattern like `30 sec between
+exercises`. Finishing a set starts the right clock automatically.
 
 An exercise:
 
