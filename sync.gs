@@ -25,7 +25,7 @@ const SHEET_NAME = 'log';
 
 const HEADERS = [
   'session_id', 'date', 'programme', 'workout', 'week', 'phase',
-  'exercise', 'set', 'weight', 'reps', 'seconds'
+  'exercise', 'set', 'weight', 'reps', 'seconds', 'kind', 'challenges'
 ];
 
 function sheet_() {
@@ -38,6 +38,9 @@ function sheet_() {
     sh.appendRow(HEADERS);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
+  } else if (sh.getLastColumn() < HEADERS.length) {
+    // an older sheet from before the kind/challenges columns: extend the header
+    sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
   }
   return sh;
 }
@@ -77,7 +80,9 @@ function doPost(e) {
       en.n || '', en.label || '',
       en.weight == null ? '' : en.weight,
       en.reps   == null ? '' : en.reps,
-      en.sec    == null ? '' : en.sec
+      en.sec    == null ? '' : en.sec,
+      s.kind || 'strength',
+      (s.challenges || []).join('|')
     ]));
 
     if (rows.length) {
@@ -114,6 +119,8 @@ function doGet(e) {
           date: r[1] instanceof Date ? r[1].toISOString() : String(r[1]),
           name: r[2], programme: r[2],
           workout: r[3], week: r[4], phase: r[5],
+          kind: r[11] || 'strength',
+          challenges: r[12] ? String(r[12]).split('|') : [],
           entries: []
         };
       }

@@ -2,41 +2,47 @@
 
 A workout logger that runs entirely in the browser. No server, no session to
 lose. Every set is written to the phone's local storage the moment you log it,
-so you can lock the screen, switch to Polar, take a twenty minute rest and come
+so you can lock the screen, switch apps, take a twenty minute rest and come
 back to exactly where you were.
 
-Currently loaded:
+## How it is organised
 
-- **Lean Bastard** (Joe DeFranco). 9 weeks, 3 phases, workouts A/B/C, with the
-  six Standards tests and the 30 Days of Delts booster.
-- **Standardized Strength** (Pat Flynn), beginner track. 8 weeks, four phases
-  of two weeks, four numbered days each. Flynn does not prescribe rest periods,
-  so the rest lines in the data are sensible defaults rather than his
-  instruction, and he posts demos on a channel rather than per exercise.
+Three tiers, every time you open it:
 
-The app opens on a programme chooser. Each card shows that programme's own
-position and how many sessions you have logged in it, and tapping one drops you
-into its menu. A session already in progress gets a Resume banner at the top,
-whichever programme it belongs to.
+```
+Tier 1   What do you want to train?     Strength  |  Cardio
+Tier 2   Which one?                      Lean Bastard · Standardized Strength · None
+                                         Joner Soccer (more cardio later)
+         then week + day (strength)  or  which session (cardio)
+Tier 3   Add a challenge?                30 Days of Delts · Sleeve Season · None
+```
 
-Each programme keeps its own place, so you can run something else for a few
-weeks and come back exactly where you left off. Switch from the chooser, from
-Settings, or from the Pick a workout screen.
+**Strength → None → a challenge** is how a challenge-only day works.
 
-Each programme also carries its own look. Lean Bastard is the DeFranco manual:
-paper white, true black, one hard red, condensed display type, square corners.
-Standardized Strength is warmer and rounder: off-white paper, slate ink, teal
-accent, Nunito, soft corners, sentence case. Nothing about how the app works
-changes between them. A programme picks its look with `theme:'lb'` or
-`theme:'ss'`; the themes are CSS variable blocks near the top of `index.html`,
-so adding a third is a dozen lines.
+**Logging for** sits above the two buttons on the opening screen and defaults
+to today. Change it to back-date something you forgot to log: the date is
+carried through every screen, stamped on the record, and used to work out which
+challenge day it was. It resets to today once you have logged.
+
+Each programme keeps its own place. Finishing the session the programme says is
+next moves you on; running any other week or day is a one-off and leaves your
+place alone. The week and day screen tells you which it is before you start.
+
+Challenges run on their own 30-day calendars, independent of any programme.
+Tapping one that has not started begins it with today as day 1. Delts attaches
+to a lifting session (press hold before, lateral hold after) or gives you the
+Y-hold on its own. Sleeve Season alternates by weekday: biceps Mon/Wed/Fri,
+triceps Tue/Thu/Sat, Sunday off.
+
+Cardio is a grid of numbered sessions. Tap the one you did, add a challenge if
+you want, log it. That is all it does for now.
 
 ## The files
 
 ```
 michael-fitness/
 ├── michael-fitness.Rproj   open this in RStudio
-├── index.html              the whole app: markup, styles, logic, programme data
+├── index.html              the whole app: styles, programme data, logic
 ├── manifest.json           lets it install to the home screen
 ├── sw.js                   offline caching (see "Updating" below)
 ├── sync.gs                 Google Apps Script, for the optional Sheet backup
@@ -46,161 +52,84 @@ michael-fitness/
 └── README.md
 ```
 
-`index.html` is the app. The other files are scaffolding.
-
 ## Running it locally
 
-Open `michael-fitness.Rproj` in RStudio, then either:
-
-- Open `index.html` and click **Preview** in the editor toolbar. Quickest, but
-  desktop only.
-- Open `serve.R` and click **Source**. This starts a local server and prints an
-  address you can type into your phone on the same wifi. Needs `servr`:
-  `install.packages("servr")`.
-
-RStudio has no JavaScript debugger, so for anything beyond a typo use the
-browser dev tools. On desktop Chrome that is F12. To debug the actual phone,
-plug it into your Mac and use Safari's Develop menu.
+Open `michael-fitness.Rproj` in RStudio, then open `serve.R` and click Source.
+It starts a local server and prints an address you can type into your phone on
+the same wifi. Needs `install.packages("servr")` once.
 
 ## Putting it online
 
-1. Create a repo on GitHub. The repo can be private; the published site will
-   still be public, which is why `robots.txt` is here.
-2. Push the contents of this folder to the repo root.
-3. Settings → Pages → deploy from branch `main`, folder `/ (root)`.
-4. Open the resulting URL on your phone in Safari, then Share → Add to Home
-   Screen.
-
-Run it from the home screen icon rather than a Safari tab. Standalone mode is
-what stops iOS discarding it when you switch apps.
+Push the folder contents to a GitHub repo, then Settings → Pages → deploy from
+`main`, folder `/ (root)`. Open the URL on your phone in Safari and use Share →
+Add to Home Screen. Run it from the icon, not a Safari tab: installed apps are
+exempt from the seven-day storage clearout that hits ordinary tabs.
 
 ## Updating
 
 **Bump `CACHE` in `sw.js` every time you change `index.html`.** It is currently
-`mf-v2`; make it `mf-v3`, and so on. If you skip this, your phone will keep
-serving the cached old version and you will wonder why nothing changed. There
-are two cache layers fighting you here: the service worker and GitHub's own
-ten minute asset cache, so give it a few minutes after pushing.
+`mf-v11`; make it `mf-v12`, and so on. If you skip this, your phone keeps
+serving the cached old version. After pushing, close the app fully from the app
+switcher and reopen it, twice if needed.
 
-## Adding another programme
+## Look
 
-Open `index.html` and find the `PROGRAMMES` object near the top of the script
-block. Copy the shape of `lean_bastard`:
+The style is called Marker: warm white, black 2px borders, square corners, and
+a flat block of colour behind the headline word on each screen. Colour has one
+job, labelling where you are. Gold means yours (current programme, logged set,
+your best). Red is Strength, green is Cardio, purple is a challenge or a rest
+clock, lime is the next thing to do. The whole palette is a set of CSS variables
+at the top of `index.html`, so a reskin is a CSS job, not a rebuild.
 
-```js
-my_programme: {
-  id:'my_programme', name:'Name', by:'Author', weeks:8, order:['A','B'],
-  wname:'Workout',        // or 'Day' — what the app calls one session
-  phases:[
-    { n:1, label:'Phase 1', from:1, to:4, warmup:[...], workouts:{ A:[...], B:[...] } }
-  ]
-}
-```
+## Adding things
 
-A workout is an array of blocks. A block is one screen:
+Everything the app trains is declared in the DATA block near the top of the
+script. Nothing below it knows the names of specific programmes.
 
-```js
-{ t:'Superset 1', rest:'30 sec between exercises', restSec:90, ex:[ ... ] }
-```
+**A programme** goes in `PROGRAMMES`. Copy the shape of `lean_bastard`:
+`id`, `name`, `by`, `short` (two letters for the row), `wname` (`'Workout'` or
+`'Day'`), `weeks`, `order` (the session letters or numbers), `restMode:'manual'`
+if the author prescribes no rest, and `phases`. A phase has a week range, a
+`warmup` list, and `workouts` keyed by session. A workout is an array of blocks;
+a block is one screen. A block whose title starts with `Superset`, or carries
+`pair:true`, is rendered round by round.
 
-A programme can set `restMode:'manual'`, which stops the app firing any rest
-clock on its own. Standardized Strength uses it, because Flynn prescribes no
-rest periods and guessing them would be putting words in his mouth. The
-30s / 60s / 2m buttons under every session work in both modes, so you can take
-a clock whenever you want one.
+Set kinds: `wr` weight and reps, `reps`, `time` (a stopwatch, with your best
+above it), `check` (one Confirm button). `{bw:25}` anywhere in a string renders
+as 25% of the bodyweight in Settings.
 
-`restSec` is the long rest, used between rounds and between blocks. A block
-whose title starts with `Superset`, or which carries `pair:true`, is rendered
-round by round and alternates its exercises; the short rest comes from the
-`rest` string, which the app reads for a pattern like `30 sec between
-exercises`. Finishing a set starts the right clock automatically.
+**A challenge** goes in `CHALLENGES`. It has `days`, a `colour`, a `blocks`
+map, and either `onLift`/`onRest` functions of the day number (for a challenge
+that attaches to lifting sessions) or a `byWeekday` function (for one that runs
+on fixed days of the week). Each block has `pos` (`start`, `end` or `any`), `k`
+(`time` or `reps`), optional `wr:true` to also log a weight, and `t`, a function
+of the day returning the instruction text.
 
-An exercise:
-
-```js
-{ c:'1a', n:'Exercise name', v:'youtubeVideoId',
-  note:'Coaching cue.',
-  alt:{ n:'Alternative', v:'youtubeVideoId' },
-  sets:[ { l:'Set 1', t:'8-10 reps (RIR 1-2)', k:'wr' } ] }
-```
-
-`k` decides how a set is logged:
-
-| `k`     | What you get                                    |
-|---------|-------------------------------------------------|
-| `wr`    | weight and reps                                 |
-| `reps`  | reps only                                       |
-| `time`  | a stopwatch, with your previous best above it   |
-| `check` | a single Confirm completed button               |
-
-Anywhere in a `t` or `note` string, `{bw:25}` renders as the actual load for
-25% of the bodyweight set in Settings. So `'Hold {bw:25}'` shows `Hold 22.5 kg`.
-
-Then pick the new programme in Settings. Nothing else needs changing.
+**A cardio course** goes in `CARDIO`, under a provider: `{ id, name, sessions }`.
+Twelve numbered sessions is all the app needs to know.
 
 ## Backing up to a Google Sheet
 
-Optional, and the app works fine without it. Once set up, finished sessions
-copy themselves to a Sheet in the background with nothing to press.
+Optional, and the app works fine without it. Once set up, finished sessions copy
+themselves to a Sheet in the background with nothing to press.
 
-**One-time setup, about fifteen minutes.**
+1. Create a Google Sheet. Extensions → Apps Script. Delete the sample code.
+2. Paste in the whole of `sync.gs`. **Press Cmd+S.**
+3. Deploy → New deployment → Web app. Execute as **Me**, access **Anyone**.
+4. Click through the "not verified" warning (Advanced → Go to project). It is
+   your own script.
+5. Copy the URL ending in `/exec` into Settings → Google Sheet backup.
 
-1. Create a new Google Sheet. Name it whatever you like.
-2. Extensions > Apps Script. Delete the sample code in `Code.gs`.
-3. Paste in the whole of `sync.gs` from this folder. Save.
-4. Deploy > New deployment. Click the gear next to "Select type" and choose
-   **Web app**.
-5. Set **Execute as: Me** and **Who has access: Anyone**. Both matter. If
-   access is left as "Only myself", Google sends back a login page instead of
-   an error and the app cannot tell the difference, so it fails silently.
-6. Click Deploy. Google will warn that the app is not verified. Click Advanced,
-   then "Go to (project name) (unsafe)". This is your own script; the warning
-   is because it has not been through Google's review process.
-7. Copy the **Web app URL**. It ends in `/exec`.
-8. In the app: Settings > Google Sheet backup, paste the URL in. The status
-   line underneath should change to "All sessions backed up".
+If you edit `sync.gs` later: Deploy → Manage deployments → pencil → Version:
+New version. Do not create a new deployment, that changes the URL. And save
+first, every time.
 
-**Checking it works.** Finish a session, then look at the Sheet. You should see
-a `log` tab with one row per set. If nothing appears, open the app in desktop
-Chrome, press F12, and look at the Console for the reason.
+The sheet gets two new columns with this version (`kind`, `challenges`). An
+existing sheet is widened automatically the first time the new script runs.
 
-**If you ever edit `sync.gs`**, use Deploy > **Manage deployments**, click the
-pencil on the deployment you already have, and set Version to "New version".
-Do not create a new deployment: that issues a new URL and the app carries on
-posting to the old one.
-
-**On a new phone.** Install the app, paste the same URL into Settings, then tap
-**Restore from Sheet**. It pulls the whole history back and rebuilds your
-personal bests. Running Restore twice is safe; it skips anything already there.
-
-**No signal in the gym.** The session saves locally as always and joins a queue.
-Next time you open the app with a connection, the queue empties on its own.
-Settings tells you how many are waiting.
-
-**A note on security.** The Sheet URL sits in `index.html`, so anyone with your
-site URL could in principle post junk rows. For an unlisted personal app this
-is not worth worrying about. If you want a small extra hurdle, set `TOKEN` to a
-word of your choosing at the top of `sync.gs`, redeploy, and put the same word
-in the app's token field.
+On a new phone, paste the same URL into Settings and tap Restore from Sheet.
 
 ## Your data
 
-Everything lives in `localStorage` on the one phone. It is never sent anywhere,
-and it is not synced between devices. Two consequences worth knowing:
-
-- Clearing Safari's website data wipes it.
-- Export CSV from History gives you a copy any time. If you have the Sheet
-  sync switched on, that is the better backup, and `googlesheets4` will read
-  it straight into R.
-- Run the app from the home screen icon, not a Safari tab. iOS clears storage
-  for sites you have not opened in a week, and installed apps are exempt.
-
-The keys are `mf.v1.settings`, `mf.v1.active`, `mf.v1.sessions`,
-`mf.v1.standards`, `mf.v1.delts` and `mf.v1.outbox`, if you ever want to poke
-at them in the browser console.
-
-## On the programme content
-
-The exercise structure came out of the Lean Bastard PDF and the demo video
-links are DeFranco's own. The coaching text in the app is written in my own
-words rather than copied from the manual. Keep the site URL to yourself.
+Everything lives in `localStorage` on the one phone. Export CSV from History
+gives you a copy any time; the Sheet sync is the better backup.
